@@ -161,14 +161,6 @@ select {
 .fhint { font-size:11px; color:var(--muted2); margin-top:12px; }
 .fback { font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6; border-top:1px solid var(--border); padding-top:14px; display:none; }
 
-.img-preview { 
-  display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; 
-}
-.img-thumb {
-  width:60px; height:60px; object-fit:cover; border-radius:6px;
-  border:1px solid var(--border);
-}
-
 @media(max-width:540px){
   .input-top { grid-template-columns:1fr; }
   .srow { flex-direction:column; }
@@ -196,7 +188,7 @@ select {
 
       <!-- PDF Upload -->
       <div class="card">
-        <div class="clabel">Uploader un PDF (avec images)</div>
+        <div class="clabel">Uploader un PDF</div>
         <div class="drop-zone" id="dropzone">
           <input type="file" id="pdffile" accept=".pdf">
           <div class="drop-icon">📄</div>
@@ -204,7 +196,6 @@ select {
           <div class="drop-sub">ou glisser ici</div>
         </div>
         <div class="pdf-status" id="pdfstatus"></div>
-        <div class="img-preview" id="imgpreview"></div>
       </div>
 
     </div>
@@ -288,10 +279,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 const G = id => document.getElementById(id);
 const LETTERS = ['A','B','C','D'];
-const MSGS = ['Lecture du cours…','Analyse des images…','Génération des QCM…','Création des Flashcards…'];
+const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des QCM…','Création des Flashcards…'];
 let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
 let pdfText = '';
-let extractedImages = [];
 
 // ── PDF UPLOAD ──────────────────────────────────────────
 const dz = G('dropzone');
@@ -311,74 +301,71 @@ G('pdffile').addEventListener('change', e => {
 
 async function readPDF(file) {
   const status = G('pdfstatus');
-  const preview = G('imgpreview');
   status.className = 'pdf-status loading';
   status.textContent = '⏳ Lecture du PDF…';
   status.style.display = 'block';
-  preview.innerHTML = '';
 
   pdfText = '';
-  extractedImages = [];
 
   try {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-    let text = "";
+    let fullText = "";
 
+    // قراءة كل الصفحات
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      const pageText = content.items.map(item => item.str).join(" ");
-      text += pageText + "\n\n";
-
-      // استخراج الصور من الصفحة
-      const ops = await page.getOperatorList();
-      for (let j = 0; j < ops.fnArray.length; j++) {
-        if (ops.fnArray[j] === pdfjsLib.OPS.paintImageXObject) {
-          try {
-            const imgName = ops.argsArray[j][0];
-            const img = await page.objs.get(imgName);
-            
-            if (img && img.data) {
-              const canvas = document.createElement('canvas');
-              canvas.width = img.width;
-              canvas.height = img.height;
-              const ctx = canvas.getContext('2d');
-              
-              const imgData = ctx.createImageData(img.width, img.height);
-              imgData.data.set(img.data);
-              ctx.putImageData(imgData, 0, 0);
-              
-              const dataUrl = canvas.toDataURL('image/png');
-              extractedImages.push(dataUrl);
-              
-              // عرض thumbnail
-              const thumb = document.createElement('img');
-              thumb.src = dataUrl;
-              thumb.className = 'img-thumb';
-              preview.appendChild(thumb);
-            }
-          } catch(e) {
-            console.log("Image extraction error:", e);
-          }
+      
+      // استخراج النص مع الحفاظ على الترتيب
+      const textContent = await page.getTextContent();
+      
+      // تجميع العناصر النصية مع مراعاة الموضع (للأعمدة)
+      const items = textContent.items;
+      let lastY = 0;
+      let pageText = "";
+      
+      for (let j = 0; j < items.length; j++) {
+        const item = items[j];
+        const y = item.transform[5]; // الموضع العمودي
+        
+        // إذا كان الفرق كبير، نضيف سطر جديد
+        if (j > 0 && Math.abs(y - lastY) > 5) {
+          pageText += "\n";
         }
+        
+        pageText += item.str;
+        lastY = y;
       }
+      
+      fullText += pageText + "\n\n";
+      
+      // تحديث الحالة
+      status.textContent = `⏳ Lecture du PDF… Page ${i}/${pdf.numPages}`;
     }
 
-    if (text.length < 50 && extractedImages.length === 0) {
-      throw new Error("PDF vide ou non lisible");
+    // تنظيف النص
+    pdfText = fullText
+      .replace(/\s+/g, ' ')           // إزالة المسافات المزدوجة
+      .replace(/\n\s*\n/g, '\n\n')     // إزالة الأسطر الفارغة المتعددة
+      .trim();
+
+    if (pdfText.length < 50) {
+      throw new Error("PDF vide ou texte non lisible (PDF scanné?)");
     }
 
-    pdfText = text;
-    G('txtin').value = pdfText.substring(0, 500) + (pdfText.length > 500 ? '\n\n...[texte tronqué]' : '');
+    // عرض النص في textarea
+    G('txtin').value = pdfText.substring(0, 2000) + (pdfText.length > 2000 ? '\n\n...[texte complet conservé]' : '');
+    G('txtin').dataset.fulltext = pdfText; // حفظ النص الكامل
 
     status.className = 'pdf-status ok';
-    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${extractedImages.length} images`;
+    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères`;
 
   } catch(e) {
+    console.error("PDF Error:", e);
     status.className = 'pdf-status err';
     status.textContent = '✗ ' + e.message;
+    pdfText = '';
   }
 }
 
@@ -386,11 +373,14 @@ async function readPDF(file) {
 G('btngen').onclick = generate;
 
 async function generate() {
-  const txt = G('txtin').value.trim();
+  // استخدام النص الكامل إذا وجد، وإلا استخدام textarea
+  const fullText = G('txtin').dataset.fulltext || G('txtin').value;
+  const txt = fullText.trim();
+  
   const err = G('errmsg');
   err.style.display = 'none';
 
-  if (!txt && extractedImages.length === 0) {
+  if (!txt || txt.length < 40) {
     err.textContent = 'Colle ton cours ou uploade un PDF (minimum 40 caractères).';
     err.style.display = 'block';
     return;
@@ -402,33 +392,28 @@ async function generate() {
   let mi = 0;
   const timer = setInterval(() => { G('lmsg').textContent = MSGS[++mi % MSGS.length]; }, 1600);
 
-  const prompt = `Tu es un expert en pédagogie médicale. Génère exactement ${nbq} QCM et ${nbf} flashcards en ${lng} à partir de ce cours.
+  const prompt = `Tu es un expert en pédagogie médicale. Génère exactement ${nbq} QCM et ${nbf} flashcards en ${lng} à partir de ce cours médical.
 
-Cours:
+COURS:
 """
-${txt.slice(0, 2500)}
+${txt.slice(0, 3500)}
 """
 
-Réponds UNIQUEMENT avec du JSON valide, sans texte avant ou après, sans markdown:
-{"qcm":[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."}],"flashcards":[{"front":"...","back":"..."}]}
+INSTRUCTIONS:
+- QCM: questions réalistes avec 4 options (A,B,C,D), une seule bonne réponse
+- Flashcards: format question/réponse concis
+- Langue: ${lng}
+- Réponds UNIQUEMENT en JSON valide:
 
-Règles: correct = index 0-3. Distracteurs réalistes. Flashcards concises.`;
+{"qcm":[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."}],"flashcards":[{"front":"...","back":"..."}]}`;
 
   try {
-    // إرسال النص + الصور إلى API
-    const requestBody = {
-      messages: [{ role: 'user', content: prompt }]
-    };
-    
-    // إضافة الصور إذا وجدت (أول 3 صور فقط لتجنب الحجم الكبير)
-    if (extractedImages.length > 0) {
-      requestBody.images = extractedImages.slice(0, 3);
-    }
-
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
 
     clearInterval(timer);
@@ -442,22 +427,36 @@ Règles: correct = index 0-3. Distracteurs réalistes. Flashcards concises.`;
     if (data.error) throw new Error(data.error);
 
     const raw = data.choices?.[0]?.message?.content || '';
-    const match = raw.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('Réponse invalide du modèle');
-
-    const parsed = JSON.parse(match[0]);
+    
+    // استخراج JSON من الرد
+    let jsonStr = raw;
+    
+    // إذا كان الرد يحتوي على ```json ... ```
+    const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (codeBlockMatch) {
+      jsonStr = codeBlockMatch[1];
+    }
+    
+    // إزالة أي نص قبل أو بعد JSON
+    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Réponse invalide du modèle: pas de JSON trouvé');
+    
+    const parsed = JSON.parse(jsonMatch[0]);
     qcm = parsed.qcm || [];
     flash = parsed.flashcards || [];
+    
     if (!qcm.length && !flash.length) throw new Error('Aucun contenu généré');
 
     answered = 0; correct = 0; fi = 0; fo = false;
     render();
     show('results');
+    
   } catch(e) {
     clearInterval(timer);
     show('input');
     err.textContent = 'Erreur : ' + e.message;
     err.style.display = 'block';
+    console.error("Generate error:", e);
   }
 }
 
@@ -475,19 +474,28 @@ function render() {
     const d = document.createElement('div'); d.className = 'qcard';
     d.innerHTML = `
       <div class="qnum">Question ${qi+1}</div>
-      <div class="qtext">${q.question}</div>
+      <div class="qtext">${escapeHtml(q.question)}</div>
       <div>${q.options.map((o, oi) => `
         <div class="opt" data-qi="${qi}" data-oi="${oi}">
           <span class="ol">${LETTERS[oi]}</span>
-          <span>${o.replace(/^[A-D]\.\s*/,'')}</span>
+          <span>${escapeHtml(o.replace(/^[A-D]\.\s*/,''))}</span>
         </div>`).join('')}
       </div>
-      <div class="expl" id="ex${qi}">${q.explanation || ''}</div>`;
+      <div class="expl" id="ex${qi}">${escapeHtml(q.explanation || '')}</div>`;
     c.appendChild(d);
   });
 
   c.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => pick(o)));
   renderFlash();
+}
+
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function pick(o) {
@@ -541,9 +549,8 @@ G('tfb').onclick = () => {
 };
 G('btnback').onclick = () => {
   G('txtin').value = '';
+  delete G('txtin').dataset.fulltext;
   pdfText = '';
-  extractedImages = [];
-  G('imgpreview').innerHTML = '';
   G('pdfstatus').style.display = 'none';
   G('errmsg').style.display = 'none';
   show('input');
