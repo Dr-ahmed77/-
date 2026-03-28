@@ -1,3 +1,4 @@
+// api/chat.js - نسخة Groq
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -7,47 +8,23 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Méthode non autorisée' });
 
   try {
-    const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
+    const GROQ_KEY = process.env.GROQ_API_KEY; // ← مفتاح مختلف
     
-    if (!OPENROUTER_KEY) {
-      console.error("OPENROUTER_KEY manquant!");
-      return res.status(500).json({ error: "Clé API non configurée" });
+    if (!GROQ_KEY) {
+      return res.status(500).json({ error: "Clé GROQ_API_KEY manquante" });
     }
 
-    const { messages, images } = req.body || {};
-    
-    if (!messages || !messages.length) {
-      return res.status(400).json({ error: "Messages manquants" });
-    }
+    const { messages } = req.body;
 
-    // بناء المحتوى للـ API
-    const content = [];
-    
-    // إضافة النص
-    const textContent = messages.map(m => m.content).join("\n");
-    content.push({ type: "text", text: textContent });
-
-    // إضافة الصور إذا وجدت
-    if (images && images.length) {
-      for (const img of images) {
-        content.push({
-          type: "image_url",
-          image_url: { url: img }
-        });
-      }
-    }
-
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENROUTER_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://medx.vercel.app",
-        "X-Title": "MEDX Study AI"
+        "Authorization": `Bearer ${GROQ_KEY}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: "qwen/qwen-2-vl-72b-instruct",  // يقرأ الصور + النصوص
-        messages: [{ role: "user", content }],
+        model: "llama-3.1-8b-instant",
+        messages: messages,
         temperature: 0.7,
         max_tokens: 4000
       })
@@ -55,16 +32,13 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     
-    if (data.error) {
-      throw new Error(data.error.message || "Erreur OpenRouter");
-    }
-
-    const reply = data.choices?.[0]?.message?.content || "";
+    if (data.error) throw new Error(data.error.message);
     
-    res.status(200).json({ choices: [{ message: { content: reply } }] });
+    res.status(200).json({
+      choices: [{ message: { content: data.choices[0].message.content } }]
+    });
 
   } catch (e) {
-    console.error("Erreur:", e);
     res.status(500).json({ error: e.message });
   }
 }
