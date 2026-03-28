@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Medical Study Generator</title>
+  <style>
+    body {
+      background: #fff;
+      font-family: 'Cairo', 'Segoe UI', Arial, sans-serif;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 24px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 32px 0 16px 0;
+      text-align: center;
+      letter-spacing: 0.2px;
+    }
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 100%;
+      max-width: 500px;
+      background: #fafbfc;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px #eee;
+      padding: 24px 18px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      font-size: 1.05rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      resize: vertical;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 12px 22px;
+      background: #0057fd;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    input[type="file"] {
+      margin: 7px 0 0 0;
+    }
+    .results {
+      max-width: 520px;
+      margin: 34px auto 0 auto;
+      padding: 16px;
+    }
+    .flashcards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .flashcard {
+      width: 180px;
+      padding: 14px;
+      border-radius: 6px;
+      background: #f4f6f7;
+      border: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      margin: 5px 0;
+    }
+    .flashcard .front {
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #240d80;
+    }
+    @media (max-width: 600px) {
+      .input-section, .results { max-width: 98vw; font-size: 15px; }
+      h1 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Medical Study Generator</h1>
+  <div class="input-section">
+    <textarea id="lessonInput" placeholder="الصق الدرس الطبي أو الملاحظات هنا..."></textarea>
+    <input id="fileInput" type="file" accept=".pdf,.txt,.ppt,.pptx" />
+    <div class="buttons">
+      <button onclick="generate('SUMMARY')">تلخيص الدرس</button>
+      <button onclick="generate('QCM')">أسئلة اختيار من متعدد</button>
+      <button onclick="generate('FLASHCARDS')">بطاقات حفظ سريعة</button>
+    </div>
+  </div>
+  <div class="results" id="results"></div>
+
+  <script>
+    async function generate(type) {
+      const textarea = document.getElementById('lessonInput');
+      const fileInput = document.getElementById('fileInput');
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = 'جاري الإنشاء...';
+
+      let formData = new FormData();
+      if (fileInput.files.length)
+        formData.append('file', fileInput.files[0]);
+      formData.append('text', textarea.value);
+      formData.append('type', type);
+
+      // غيّر المسار /api/generate حسب مكان الباك اند أو استخدم مسار فعلي،
+      // أو اطلب من تطوير الباك اند دعمه لو على نفس السيرفر.
+      let res = await fetch('/api/generate', { method: 'POST', body: formData });
+      let data = await res.json();
+      if(type === 'FLASHCARDS') {
+        try {
+          let cards = JSON.parse(data.result);
+          resultsDiv.innerHTML = `
+            <div class="flashcards">
+              ${cards.map(c => `<div class="flashcard"><div class="front">${c.front}</div><div>${c.back}</div></div>`).join('')}
+            </div>
+          `;
+        } catch {
+          resultsDiv.innerHTML = data.result;
+        }
+      } else {
+        resultsDiv.innerHTML = data.result;
+      }
+    }
+  </script>
+</body>
+</html>
