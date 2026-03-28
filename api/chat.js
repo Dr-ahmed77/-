@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         "X-Title": "MEDX Study AI"
       },
       body: JSON.stringify({
-        model: "qwen/qwen-2-vl-72b-instruct",
+        model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: [{ role: "user", content: messages[0].content }],
         temperature: 0.7,
         max_tokens: 4000
