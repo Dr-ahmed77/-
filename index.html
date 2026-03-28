@@ -31,7 +31,6 @@ nav {
 .card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:18px; }
 .clabel { font-size:11px; font-weight:500; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted2); margin-bottom:10px; }
 
-/* INPUT GRID */
 .input-top { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
 
 textarea {
@@ -45,7 +44,6 @@ textarea {
 textarea:focus { border-color:#9ca3af; }
 textarea::placeholder { color:var(--muted2); }
 
-/* PDF UPLOAD */
 .drop-zone {
   border:1.5px dashed var(--border2); border-radius:10px;
   padding:28px 16px; text-align:center; cursor:pointer;
@@ -66,7 +64,6 @@ textarea::placeholder { color:var(--muted2); }
 .pdf-status.loading { background:#eff6ff; color:#1d4ed8; border:1px solid #93c5fd; }
 .pdf-status.err { background:var(--danger-bg); color:var(--danger-text); border:1px solid var(--danger-border); }
 
-/* SETTINGS */
 .srow { display:flex; gap:10px; flex-wrap:wrap; }
 .field { display:flex; flex-direction:column; gap:4px; flex:1; min-width:110px; }
 .field label { font-size:11px; color:var(--muted); }
@@ -93,7 +90,6 @@ select {
   font-size:13px; color:var(--danger-text); margin-top:10px; display:none;
 }
 
-/* LOADING */
 #s-loading { display:none; text-align:center; padding:80px 20px; }
 .spinner {
   width:40px; height:40px; border-radius:50%;
@@ -103,7 +99,6 @@ select {
 @keyframes spin { to { transform:rotate(360deg); } }
 .lmsg { font-size:13px; color:var(--muted); }
 
-/* RESULTS */
 #s-results { display:none; }
 .rh { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .rtitle { font-size:15px; font-weight:500; }
@@ -133,7 +128,6 @@ select {
 }
 .qprog { font-size:11px; color:var(--muted2); margin-bottom:10px; }
 
-/* QCM */
 .qcard { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:10px; }
 .qnum { font-size:10px; color:var(--muted2); text-transform:uppercase; letter-spacing:.8px; margin-bottom:5px; }
 .qtext { font-size:14px; font-weight:500; margin-bottom:12px; line-height:1.5; }
@@ -149,7 +143,6 @@ select {
 .ol { width:20px; height:20px; min-width:20px; border-radius:50%; border:1px solid var(--border2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:500; }
 .expl { font-size:12px; color:var(--muted); margin-top:10px; padding-top:10px; border-top:1px solid var(--border); line-height:1.5; display:none; }
 
-/* FLASHCARDS */
 .fnav { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
 .fcnt { font-size:13px; color:var(--muted); }
 .farr { width:30px; height:30px; border:1px solid var(--border); border-radius:8px; background:none; cursor:pointer; font-size:13px; color:var(--muted); display:flex; align-items:center; justify-content:center; transition:all .15s; }
@@ -167,6 +160,14 @@ select {
 .ffront { font-size:15px; font-weight:500; line-height:1.5; }
 .fhint { font-size:11px; color:var(--muted2); margin-top:12px; }
 .fback { font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6; border-top:1px solid var(--border); padding-top:14px; display:none; }
+
+.img-preview { 
+  display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; 
+}
+.img-thumb {
+  width:60px; height:60px; object-fit:cover; border-radius:6px;
+  border:1px solid var(--border);
+}
 
 @media(max-width:540px){
   .input-top { grid-template-columns:1fr; }
@@ -195,7 +196,7 @@ select {
 
       <!-- PDF Upload -->
       <div class="card">
-        <div class="clabel">Uploader un PDF</div>
+        <div class="clabel">Uploader un PDF (avec images)</div>
         <div class="drop-zone" id="dropzone">
           <input type="file" id="pdffile" accept=".pdf">
           <div class="drop-icon">📄</div>
@@ -203,6 +204,7 @@ select {
           <div class="drop-sub">ou glisser ici</div>
         </div>
         <div class="pdf-status" id="pdfstatus"></div>
+        <div class="img-preview" id="imgpreview"></div>
       </div>
 
     </div>
@@ -286,9 +288,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 const G = id => document.getElementById(id);
 const LETTERS = ['A','B','C','D'];
-const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des QCM…','Création des Flashcards…'];
+const MSGS = ['Lecture du cours…','Analyse des images…','Génération des QCM…','Création des Flashcards…'];
 let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
 let pdfText = '';
+let extractedImages = [];
 
 // ── PDF UPLOAD ──────────────────────────────────────────
 const dz = G('dropzone');
@@ -307,64 +310,78 @@ G('pdffile').addEventListener('change', e => {
 });
 
 async function readPDF(file) {
-
   const status = G('pdfstatus');
+  const preview = G('imgpreview');
   status.className = 'pdf-status loading';
   status.textContent = '⏳ Lecture du PDF…';
   status.style.display = 'block';
+  preview.innerHTML = '';
 
   pdfText = '';
+  extractedImages = [];
 
   try {
-
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
     let text = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
-
       const page = await pdf.getPage(i);
-
       const content = await page.getTextContent();
       const pageText = content.items.map(item => item.str).join(" ");
+      text += pageText + "\n\n";
 
-      text += pageText + "\n";
-
-      // تحويل الصفحة إلى صورة
-      const viewport = page.getViewport({ scale: 1.5 });
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({
-        canvasContext: context,
-        viewport
-      }).promise;
-
-      const img = canvas.toDataURL("image/png");
-
-      text += `[Image page ${i}] `;
+      // استخراج الصور من الصفحة
+      const ops = await page.getOperatorList();
+      for (let j = 0; j < ops.fnArray.length; j++) {
+        if (ops.fnArray[j] === pdfjsLib.OPS.paintImageXObject) {
+          try {
+            const imgName = ops.argsArray[j][0];
+            const img = await page.objs.get(imgName);
+            
+            if (img && img.data) {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              
+              const imgData = ctx.createImageData(img.width, img.height);
+              imgData.data.set(img.data);
+              ctx.putImageData(imgData, 0, 0);
+              
+              const dataUrl = canvas.toDataURL('image/png');
+              extractedImages.push(dataUrl);
+              
+              // عرض thumbnail
+              const thumb = document.createElement('img');
+              thumb.src = dataUrl;
+              thumb.className = 'img-thumb';
+              preview.appendChild(thumb);
+            }
+          } catch(e) {
+            console.log("Image extraction error:", e);
+          }
+        }
+      }
     }
 
-    if (text.length < 50) throw new Error("PDF vide");
+    if (text.length < 50 && extractedImages.length === 0) {
+      throw new Error("PDF vide ou non lisible");
+    }
 
     pdfText = text;
-    G('txtin').value = pdfText;
+    G('txtin').value = pdfText.substring(0, 500) + (pdfText.length > 500 ? '\n\n...[texte tronqué]' : '');
 
     status.className = 'pdf-status ok';
-    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages analysées`;
+    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${extractedImages.length} images`;
 
   } catch(e) {
-
     status.className = 'pdf-status err';
     status.textContent = '✗ ' + e.message;
-
   }
-
 }
+
 // ── GENERATE ────────────────────────────────────────────
 G('btngen').onclick = generate;
 
@@ -373,7 +390,7 @@ async function generate() {
   const err = G('errmsg');
   err.style.display = 'none';
 
-  if (!txt || txt.length < 40) {
+  if (!txt && extractedImages.length === 0) {
     err.textContent = 'Colle ton cours ou uploade un PDF (minimum 40 caractères).';
     err.style.display = 'block';
     return;
@@ -389,7 +406,7 @@ async function generate() {
 
 Cours:
 """
-${txt.slice(0, 3500)}
+${txt.slice(0, 2500)}
 """
 
 Réponds UNIQUEMENT avec du JSON valide, sans texte avant ou après, sans markdown:
@@ -398,21 +415,31 @@ Réponds UNIQUEMENT avec du JSON valide, sans texte avant ou après, sans markdo
 Règles: correct = index 0-3. Distracteurs réalistes. Flashcards concises.`;
 
   try {
-    // في ملف HTML الخاص بك، تأكد أن fetch يبدو هكذا:
-const response = await fetch('/api/chat', {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json'  // ← مهم جداً!
-  },
-  body: JSON.stringify({ 
-    messages: [{ role: 'user', content: prompt }]  // ← تأكد من البنية
-  })
-});
+    // إرسال النص + الصور إلى API
+    const requestBody = {
+      messages: [{ role: 'user', content: prompt }]
+    };
+    
+    // إضافة الصور إذا وجدت (أول 3 صور فقط لتجنب الحجم الكبير)
+    if (extractedImages.length > 0) {
+      requestBody.images = extractedImages.slice(0, 3);
+    }
+
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
 
     clearInterval(timer);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP ${res.status}`);
+    }
+    
     const data = await res.json();
-    if (data.error) throw new Error(typeof data.error === 'object' ? data.error.message : data.error);
+    if (data.error) throw new Error(data.error);
 
     const raw = data.choices?.[0]?.message?.content || '';
     const match = raw.match(/\{[\s\S]*\}/);
@@ -515,6 +542,8 @@ G('tfb').onclick = () => {
 G('btnback').onclick = () => {
   G('txtin').value = '';
   pdfText = '';
+  extractedImages = [];
+  G('imgpreview').innerHTML = '';
   G('pdfstatus').style.display = 'none';
   G('errmsg').style.display = 'none';
   show('input');
