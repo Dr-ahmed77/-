@@ -399,10 +399,10 @@ Règles: correct = index 0-3. Distracteurs réalistes. Flashcards concises.`;
 
   try {
     const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
-    });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+});
 
     clearInterval(timer);
     if (!res.ok) throw new Error('HTTP ' + res.status);
