@@ -1,0 +1,678 @@
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font-sans); }
+
+  #app {
+    min-height: 100vh;
+    background: var(--color-background-tertiary);
+    padding: 0;
+  }
+
+  .topbar {
+    background: var(--color-background-primary);
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    letter-spacing: -0.3px;
+  }
+  .logo span { color: var(--color-text-secondary); font-weight: 400; }
+
+  .main { padding: 24px; max-width: 860px; margin: 0 auto; }
+
+  /* SCREEN: INPUT */
+  #screen-input {}
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+  }
+  .card-title {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .drop-zone {
+    border: 0.5px dashed var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { background: var(--color-background-secondary); }
+  .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .drop-icon {
+    width: 36px; height: 36px; border-radius: var(--border-radius-md);
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    margin: 0 auto 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drop-icon svg { width: 16px; height: 16px; stroke: var(--color-text-secondary); fill: none; stroke-width: 1.5; }
+  .drop-text { font-size: 13px; color: var(--color-text-secondary); }
+  .drop-text strong { color: var(--color-text-primary); font-weight: 500; }
+  .file-name {
+    margin-top: 10px; font-size: 12px; color: var(--color-text-info);
+    background: var(--color-background-info);
+    border-radius: var(--border-radius-md);
+    padding: 4px 10px; display: inline-block;
+  }
+
+  .divider {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: var(--color-text-tertiary);
+    margin: 12px 0;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 0.5px;
+    background: var(--color-border-tertiary);
+  }
+
+  textarea {
+    width: 100%; height: 120px; resize: none;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 10px 12px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color 0.15s;
+    line-height: 1.5;
+  }
+  textarea:focus { border-color: var(--color-border-primary); }
+  textarea::placeholder { color: var(--color-text-tertiary); }
+
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .field { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .field label { font-size: 12px; color: var(--color-text-secondary); }
+  select {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 7px 10px;
+    font-size: 13px;
+    color: var(--color-text-primary);
+    outline: none;
+    font-family: var(--font-sans);
+  }
+
+  .btn-generate {
+    width: 100%; padding: 13px;
+    background: var(--color-text-primary);
+    color: var(--color-background-primary);
+    border: none; border-radius: var(--border-radius-md);
+    font-size: 15px; font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: opacity 0.15s;
+    margin-top: 12px;
+  }
+  .btn-generate:hover { opacity: 0.85; }
+  .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* SCREEN: LOADING */
+  #screen-loading {
+    display: none;
+    text-align: center;
+    padding: 80px 24px;
+  }
+  .loader-ring {
+    width: 44px; height: 44px;
+    border: 2px solid var(--color-border-tertiary);
+    border-top-color: var(--color-text-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text { font-size: 14px; color: var(--color-text-secondary); }
+
+  /* SCREEN: RESULTS */
+  #screen-results { display: none; }
+
+  .result-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .result-title { font-size: 17px; font-weight: 500; }
+  .btn-back {
+    font-size: 13px; color: var(--color-text-secondary);
+    background: none; border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 6px 14px; cursor: pointer;
+    font-family: var(--font-sans);
+    transition: border-color 0.15s;
+  }
+  .btn-back:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+
+  .tabs-bar {
+    display: flex; gap: 4px;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 3px;
+    margin-bottom: 16px;
+    width: fit-content;
+  }
+  .tab-btn {
+    font-size: 13px; font-weight: 500;
+    padding: 6px 18px; border-radius: 7px;
+    border: none; background: none;
+    cursor: pointer; font-family: var(--font-sans);
+    color: var(--color-text-secondary);
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+  }
+
+  /* QCM */
+  #tab-qcm {}
+  .qcm-progress {
+    font-size: 12px; color: var(--color-text-tertiary);
+    margin-bottom: 16px;
+  }
+  .question-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 22px;
+    margin-bottom: 12px;
+  }
+  .q-number {
+    font-size: 11px; color: var(--color-text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+  .q-text { font-size: 15px; font-weight: 500; margin-bottom: 16px; line-height: 1.5; }
+  .option {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-tertiary);
+    margin-bottom: 8px; cursor: pointer;
+    transition: all 0.15s; font-size: 14px;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+  }
+  .option:hover:not(.locked) { border-color: var(--color-border-primary); background: var(--color-background-secondary); }
+  .option.selected-wrong { border-color: var(--color-border-danger); background: var(--color-background-danger); color: var(--color-text-danger); }
+  .option.correct { border-color: var(--color-border-success); background: var(--color-background-success); color: var(--color-text-success); }
+  .option-letter {
+    width: 22px; height: 22px; min-width: 22px;
+    border-radius: 50%; border: 0.5px solid var(--color-border-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500;
+  }
+
+  /* FLASHCARDS */
+  #tab-flash { display: none; }
+  .flash-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .flash-counter { font-size: 13px; color: var(--color-text-secondary); }
+  .flash-btns { display: flex; gap: 8px; }
+  .flash-arrow {
+    width: 32px; height: 32px;
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    background: none; cursor: pointer;
+    font-size: 14px; color: var(--color-text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s;
+  }
+  .flash-arrow:hover:not(:disabled) { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+  .flash-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .flashcard {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 40px 28px;
+    text-align: center;
+    cursor: pointer;
+    min-height: 200px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .flashcard:hover { border-color: var(--color-border-secondary); }
+  .flash-side-label {
+    position: absolute; top: 14px; left: 16px;
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+  .flash-content { font-size: 16px; font-weight: 500; line-height: 1.5; }
+  .flash-hint {
+    font-size: 12px; color: var(--color-text-tertiary);
+    margin-top: 14px;
+  }
+  .flash-answer {
+    font-size: 14px; color: var(--color-text-secondary);
+    margin-top: 14px; line-height: 1.6;
+    display: none;
+    border-top: 0.5px solid var(--color-border-tertiary);
+    padding-top: 14px;
+  }
+
+  .score-banner {
+    background: var(--color-background-success);
+    border: 0.5px solid var(--color-border-success);
+    border-radius: var(--border-radius-md);
+    padding: 12px 16px;
+    font-size: 14px; color: var(--color-text-success);
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .error-msg {
+    background: var(--color-background-danger);
+    border: 0.5px solid var(--color-border-danger);
+    border-radius: var(--border-radius-md);
+    padding: 12px 16px;
+    font-size: 13px; color: var(--color-text-danger);
+    margin-top: 12px;
+    display: none;
+  }
+
+  @media (max-width: 560px) {
+    .input-grid { grid-template-columns: 1fr; }
+    .settings-row { flex-direction: column; align-items: stretch; }
+  }
+</style>
+
+<div id="app">
+  <div class="topbar">
+    <div class="logo">MEDX <span>— Study AI</span></div>
+    <div style="font-size:12px; color:var(--color-text-tertiary);">Faculté de Médecine</div>
+  </div>
+
+  <div class="main">
+
+    <!-- INPUT SCREEN -->
+    <div id="screen-input">
+      <div class="input-grid">
+        <!-- PDF -->
+        <div class="card">
+          <div class="card-title">PDF de cours</div>
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" accept=".pdf" id="pdf-input" />
+            <div class="drop-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="drop-text"><strong>Choisir un PDF</strong><br>ou glisser ici</div>
+            <div class="file-name" id="file-name" style="display:none"></div>
+          </div>
+        </div>
+
+        <!-- TEXT -->
+        <div class="card">
+          <div class="card-title">Ou coller le texte</div>
+          <textarea id="text-input" placeholder="Colle ton cours ici… ex: La mitose est le processus de division cellulaire comprenant 4 phases principales : prophase, métaphase, anaphase et télophase…"></textarea>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="card">
+        <div class="settings-row">
+          <div class="field">
+            <label>Nombre de QCM</label>
+            <select id="nb-qcm">
+              <option value="5">5 questions</option>
+              <option value="10" selected>10 questions</option>
+              <option value="15">15 questions</option>
+              <option value="20">20 questions</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Nombre de Flashcards</label>
+            <select id="nb-flash">
+              <option value="5">5 flashcards</option>
+              <option value="10" selected>10 flashcards</option>
+              <option value="15">15 flashcards</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Langue</label>
+            <select id="lang">
+              <option value="français">Français</option>
+              <option value="arabe">Arabe</option>
+              <option value="anglais">Anglais</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-msg" id="error-msg"></div>
+      <button class="btn-generate" id="btn-generate">Générer QCM + Flashcards</button>
+    </div>
+
+    <!-- LOADING -->
+    <div id="screen-loading">
+      <div class="loader-ring"></div>
+      <div class="loader-text" id="loader-text">Analyse du cours en cours…</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="screen-results">
+      <div class="result-header">
+        <div class="result-title" id="result-title">Résultats</div>
+        <button class="btn-back" id="btn-back">← Nouveau cours</button>
+      </div>
+
+      <div class="score-banner" id="score-banner"></div>
+
+      <div class="tabs-bar">
+        <button class="tab-btn active" id="tab-qcm-btn">QCM</button>
+        <button class="tab-btn" id="tab-flash-btn">Flashcards</button>
+      </div>
+
+      <!-- QCM TAB -->
+      <div id="tab-qcm">
+        <div class="qcm-progress" id="qcm-progress"></div>
+        <div id="questions-container"></div>
+      </div>
+
+      <!-- FLASHCARD TAB -->
+      <div id="tab-flash">
+        <div class="flash-nav">
+          <div class="flash-counter" id="flash-counter">1 / 10</div>
+          <div class="flash-btns">
+            <button class="flash-arrow" id="flash-prev">←</button>
+            <button class="flash-arrow" id="flash-next">→</button>
+          </div>
+        </div>
+        <div class="flashcard" id="flashcard">
+          <div class="flash-side-label" id="flash-label">Question</div>
+          <div class="flash-content" id="flash-q"></div>
+          <div class="flash-hint" id="flash-hint">Cliquer pour révéler la réponse</div>
+          <div class="flash-answer" id="flash-a"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let pdfText = '';
+let qcmData = [];
+let flashData = [];
+let flashIdx = 0;
+let flashOpen = false;
+let answered = 0;
+let correct = 0;
+
+const $ = id => document.getElementById(id);
+
+// PDF reading via FileReader
+$('pdf-input').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  $('file-name').textContent = file.name;
+  $('file-name').style.display = 'inline-block';
+  // Read as text if possible, else use name as signal
+  const reader = new FileReader();
+  reader.onload = ev => {
+    // Try to extract readable text from PDF binary
+    const binary = ev.target.result;
+    const text = extractPdfText(binary);
+    pdfText = text && text.length > 100 ? text : `[PDF: ${file.name}] — Contenu non extractible directement. Utiliser le champ texte pour coller le cours.`;
+  };
+  reader.readAsBinaryString(file);
+});
+
+function extractPdfText(binary) {
+  try {
+    let text = '';
+    const matches = binary.match(/\(([^)]{3,200})\)/g) || [];
+    matches.forEach(m => {
+      const inner = m.slice(1, -1).replace(/\\n/g,' ').replace(/\\/g,'');
+      if (/[a-zA-ZÀ-ÿ]{3,}/.test(inner)) text += inner + ' ';
+    });
+    return text.trim();
+  } catch { return ''; }
+}
+
+// Drag and drop
+const dz = $('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    $('file-name').textContent = file.name;
+    $('file-name').style.display = 'inline-block';
+  }
+});
+
+$('btn-generate').addEventListener('click', generate);
+
+async function generate() {
+  const textInput = $('text-input').value.trim();
+  const courseText = textInput || pdfText;
+  const errEl = $('error-msg');
+  errEl.style.display = 'none';
+
+  if (!courseText || courseText.length < 50) {
+    errEl.textContent = 'Colle ton cours dans le champ texte ou uploade un PDF lisible.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const nbQcm = $('nb-qcm').value;
+  const nbFlash = $('nb-flash').value;
+  const lang = $('lang').value;
+
+  show('loading');
+  const loadMsgs = ['Lecture du cours…', 'Identification des concepts clés…', 'Génération des QCM…', 'Création des Flashcards…'];
+  let li = 0;
+  const lTimer = setInterval(() => { $('loader-text').textContent = loadMsgs[++li % loadMsgs.length]; }, 1800);
+
+  try {
+    const prompt = `Tu es un expert en pédagogie médicale. Analyse ce cours et génère exactement ${nbQcm} QCM et ${nbFlash} flashcards en ${lang}.
+
+Cours:
+"""
+${courseText.slice(0, 4000)}
+"""
+
+Réponds UNIQUEMENT avec un JSON valide, sans texte avant ou après, de ce format exact:
+{
+  "qcm": [
+    {
+      "question": "...",
+      "options": ["A. ...", "B. ...", "C. ...", "D. ..."],
+      "correct": 0,
+      "explanation": "..."
+    }
+  ],
+  "flashcards": [
+    {
+      "front": "Concept ou question courte",
+      "back": "Réponse ou définition claire"
+    }
+  ]
+}
+
+Règles:
+- correct = index (0-3) de la bonne réponse
+- Questions ciblées sur les points importants du cours
+- Flashcards: front = concept clé, back = explication concise
+- Distracteurs réalistes pour les QCM`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    clearInterval(lTimer);
+    const data = await res.json();
+    const raw = data.content.find(b => b.type === 'text')?.text || '';
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Format invalide');
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    qcmData = parsed.qcm || [];
+    flashData = parsed.flashcards || [];
+
+    if (!qcmData.length && !flashData.length) throw new Error('Aucune donnée générée');
+
+    answered = 0; correct = 0; flashIdx = 0; flashOpen = false;
+    renderResults();
+    show('results');
+  } catch (err) {
+    clearInterval(lTimer);
+    show('input');
+    errEl.textContent = 'Erreur lors de la génération. Vérifie ta connexion ou réessaie.';
+    errEl.style.display = 'block';
+  }
+}
+
+function show(screen) {
+  $('screen-input').style.display = screen === 'input' ? 'block' : 'none';
+  $('screen-loading').style.display = screen === 'loading' ? 'block' : 'none';
+  $('screen-results').style.display = screen === 'results' ? 'block' : 'none';
+}
+
+function renderResults() {
+  $('result-title').textContent = `${qcmData.length} QCM · ${flashData.length} Flashcards`;
+  $('qcm-progress').textContent = `0 / ${qcmData.length} répondues`;
+  $('score-banner').style.display = 'none';
+
+  const container = $('questions-container');
+  container.innerHTML = '';
+  qcmData.forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.innerHTML = `
+      <div class="q-number">Question ${qi + 1}</div>
+      <div class="q-text">${q.question}</div>
+      <div class="options-list">
+        ${q.options.map((opt, oi) => `
+          <div class="option" data-qi="${qi}" data-oi="${oi}">
+            <span class="option-letter">${['A','B','C','D'][oi]}</span>
+            <span>${opt.replace(/^[A-D]\.\s*/,'')}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="explanation" id="exp-${qi}" style="display:none; font-size:13px; color:var(--color-text-secondary); margin-top:12px; padding-top:12px; border-top:0.5px solid var(--color-border-tertiary);">
+        ${q.explanation || ''}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  container.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => handleAnswer(opt));
+  });
+
+  renderFlash();
+}
+
+function handleAnswer(opt) {
+  const qi = parseInt(opt.dataset.qi);
+  const oi = parseInt(opt.dataset.oi);
+  const card = opt.closest('.question-card');
+  if (card.querySelector('.option.correct, .option.selected-wrong')) return;
+
+  const isCorrect = oi === qcmData[qi].correct;
+  if (isCorrect) { opt.classList.add('correct'); correct++; }
+  else {
+    opt.classList.add('selected-wrong');
+    card.querySelectorAll('.option')[qcmData[qi].correct].classList.add('correct');
+  }
+  card.querySelectorAll('.option').forEach(o => o.classList.add('locked'));
+  const exp = $(`exp-${qi}`);
+  if (exp) exp.style.display = 'block';
+  answered++;
+  $('qcm-progress').textContent = `${answered} / ${qcmData.length} répondues`;
+
+  if (answered === qcmData.length) {
+    const pct = Math.round((correct / qcmData.length) * 100);
+    const banner = $('score-banner');
+    banner.textContent = `Score final : ${correct} / ${qcmData.length} (${pct}%)`;
+    banner.style.display = 'block';
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function renderFlash() {
+  if (!flashData.length) return;
+  flashOpen = false;
+  const f = flashData[flashIdx];
+  $('flash-counter').textContent = `${flashIdx + 1} / ${flashData.length}`;
+  $('flash-q').textContent = f.front;
+  $('flash-a').textContent = f.back;
+  $('flash-a').style.display = 'none';
+  $('flash-hint').style.display = 'block';
+  $('flash-label').textContent = 'Question';
+  $('flash-prev').disabled = flashIdx === 0;
+  $('flash-next').disabled = flashIdx === flashData.length - 1;
+}
+
+$('flashcard').addEventListener('click', () => {
+  flashOpen = !flashOpen;
+  $('flash-a').style.display = flashOpen ? 'block' : 'none';
+  $('flash-hint').style.display = flashOpen ? 'none' : 'block';
+  $('flash-label').textContent = flashOpen ? 'Réponse' : 'Question';
+});
+
+$('flash-prev').addEventListener('click', () => { if (flashIdx > 0) { flashIdx--; renderFlash(); } });
+$('flash-next').addEventListener('click', () => { if (flashIdx < flashData.length - 1) { flashIdx++; renderFlash(); } });
+
+$('tab-qcm-btn').addEventListener('click', () => {
+  $('tab-qcm').style.display = 'block';
+  $('tab-flash').style.display = 'none';
+  $('tab-qcm-btn').classList.add('active');
+  $('tab-flash-btn').classList.remove('active');
+});
+
+$('tab-flash-btn').addEventListener('click', () => {
+  $('tab-flash').style.display = 'block';
+  $('tab-qcm').style.display = 'none';
+  $('tab-flash-btn').classList.add('active');
+  $('tab-qcm-btn').classList.remove('active');
+});
+
+$('btn-back').addEventListener('click', () => {
+  $('text-input').value = '';
+  pdfText = '';
+  $('file-name').style.display = 'none';
+  $('error-msg').style.display = 'none';
+  show('input');
+});
+</script>
