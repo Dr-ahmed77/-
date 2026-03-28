@@ -17,7 +17,6 @@
   --danger:#ef4444; --danger-bg:#fef2f2;
   --accent:#3b82f6; --accent-light:#eff6ff;
   --gradient-x: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --ai-bg:#1a1a2e; --ai-accent:#16213e;
 }
 
 body { 
@@ -82,7 +81,7 @@ nav {
 
 .telegram-icon { width:18px; height:18px; }
 
-.main { max-width:850px; margin:0 auto; padding:32px 24px; padding-bottom:100px; }
+.main { max-width:850px; margin:0 auto; padding:32px 24px; padding-bottom:120px; }
 
 .card { 
   background:var(--white); 
@@ -124,8 +123,6 @@ textarea:focus {
   background:var(--white);
   box-shadow:0 0 0 4px var(--accent-light);
 }
-
-textarea::placeholder { color:var(--muted2); }
 
 .drop-zone {
   border:2px dashed var(--border2); 
@@ -181,11 +178,6 @@ select {
   font-family:'DM Sans',sans-serif; 
   outline:none;
   cursor:pointer;
-}
-
-select:focus {
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px var(--accent-light);
 }
 
 .btn {
@@ -244,7 +236,6 @@ select:focus {
   font-family:'DM Sans',sans-serif; 
   font-weight:500;
 }
-.btn-back:hover { color:var(--text); border-color:var(--border2); }
 
 .tabs {
   display:flex; 
@@ -377,16 +368,15 @@ select:focus {
 .fhint { font-size:12px; color:var(--muted2); margin-top:16px; font-weight:500; }
 .fback { font-size:15px; color:var(--muted); margin-top:20px; line-height:1.8; border-top:2px solid var(--border); padding-top:20px; display:none; font-weight:500; }
 
-/* 🤖 AI CHATBOT STYLES */
-.ai-chat-container {
+/* 🤖 AI CHATBOT - بسيط وواضح */
+.ai-container {
   position:fixed;
-  bottom:24px;
-  right:24px;
+  bottom:20px;
+  right:20px;
   z-index:1000;
-  font-family:'DM Sans',sans-serif;
 }
 
-.ai-toggle {
+.ai-button {
   width:60px;
   height:60px;
   border-radius:50%;
@@ -395,128 +385,94 @@ select:focus {
   color:white;
   font-size:28px;
   cursor:pointer;
-  box-shadow:0 8px 32px rgba(102,126,234,0.4);
+  box-shadow:0 4px 20px rgba(102,126,234,0.4);
   transition:all 0.3s;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
-.ai-toggle:hover {
+.ai-button:hover {
   transform:scale(1.1);
-  box-shadow:0 12px 40px rgba(102,126,234,0.5);
+  box-shadow:0 6px 30px rgba(102,126,234,0.6);
 }
 
-.ai-window {
+.ai-chat {
   position:absolute;
-  bottom:80px;
+  bottom:75px;
   right:0;
-  width:380px;
-  height:500px;
-  background:var(--ai-bg);
-  border-radius:20px;
-  box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
+  width:350px;
+  height:450px;
+  background:#1a1a2e;
+  border-radius:16px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
   display:none;
   flex-direction:column;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,0.1);
 }
 
-.ai-window.open { display:flex; animation:slideUp 0.3s ease; }
-
-@keyframes slideUp {
-  from { opacity:0; transform:translateY(20px) scale(0.95); }
-  to { opacity:1; transform:translateY(0) scale(1); }
+.ai-chat.show {
+  display:flex;
 }
 
 .ai-header {
-  background:var(--ai-accent);
-  padding:16px 20px;
+  background:#16213e;
+  padding:15px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-.ai-title {
+.ai-header-title {
   color:white;
-  font-size:15px;
+  font-size:14px;
   font-weight:600;
   display:flex;
   align-items:center;
-  gap:10px;
-}
-
-.ai-status {
-  width:8px;
-  height:8px;
-  background:#22c55e;
-  border-radius:50%;
-  animation:pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,100% { opacity:1; }
-  50% { opacity:0.5; }
+  gap:8px;
 }
 
 .ai-close {
   background:none;
   border:none;
-  color:rgba(255,255,255,0.7);
-  font-size:24px;
+  color:white;
+  font-size:20px;
   cursor:pointer;
-  transition:color 0.2s;
 }
-.ai-close:hover { color:white; }
 
-.ai-messages {
+.ai-body {
   flex:1;
   overflow-y:auto;
-  padding:20px;
+  padding:15px;
   display:flex;
   flex-direction:column;
-  gap:12px;
+  gap:10px;
 }
 
-.ai-message {
-  max-width:85%;
-  padding:12px 16px;
-  border-radius:18px;
-  font-size:14px;
-  line-height:1.6;
-  animation:fadeIn 0.3s ease;
+.ai-msg {
+  max-width:80%;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:13px;
+  line-height:1.5;
 }
 
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
-}
-
-.ai-message.user {
+.ai-msg.user {
   align-self:flex-end;
   background:var(--accent);
   color:white;
-  border-bottom-right-radius:4px;
 }
 
-.ai-message.bot {
+.ai-msg.bot {
   align-self:flex-start;
   background:rgba(255,255,255,0.1);
   color:white;
-  border-bottom-left-radius:4px;
 }
 
-.ai-message.typing {
-  background:rgba(255,255,255,0.05);
-  color:rgba(255,255,255,0.7);
-  font-style:italic;
-}
-
-.ai-input-area {
-  padding:16px 20px;
-  background:var(--ai-accent);
-  border-top:1px solid rgba(255,255,255,0.1);
+.ai-footer {
+  padding:15px;
+  background:#16213e;
   display:flex;
   gap:10px;
 }
@@ -525,61 +481,32 @@ select:focus {
   flex:1;
   background:rgba(255,255,255,0.1);
   border:1px solid rgba(255,255,255,0.2);
-  border-radius:12px;
-  padding:12px 16px;
+  border-radius:8px;
+  padding:10px 14px;
   color:white;
-  font-family:'DM Sans',sans-serif;
-  font-size:14px;
+  font-size:13px;
   outline:none;
-  transition:all 0.2s;
 }
 
-.ai-input::placeholder { color:rgba(255,255,255,0.5); }
-.ai-input:focus {
-  background:rgba(255,255,255,0.15);
-  border-color:rgba(255,255,255,0.3);
+.ai-input::placeholder {
+  color:rgba(255,255,255,0.5);
 }
 
 .ai-send {
-  width:44px;
-  height:44px;
-  border-radius:12px;
+  padding:10px 16px;
   background:var(--accent);
   border:none;
+  border-radius:8px;
   color:white;
+  font-size:13px;
   cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all 0.2s;
 }
-
-.ai-send:hover { background:#2563eb; transform:scale(1.05); }
-.ai-send:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-
-.ai-context {
-  padding:10px 16px;
-  background:rgba(59,130,246,0.2);
-  border-bottom:1px solid rgba(255,255,255,0.1);
-  font-size:12px;
-  color:rgba(255,255,255,0.9);
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.ai-context-icon { font-size:14px; }
 
 @media(max-width:640px){
   .input-top { grid-template-columns:1fr; }
   .srow { flex-direction:column; }
-  .main { padding:20px 16px; padding-bottom:100px; }
-  
-  .ai-window {
-    width:calc(100vw - 32px);
-    height:60vh;
-    right:-8px;
-  }
+  .main { padding:20px 16px; padding-bottom:120px; }
+  .ai-chat { width:calc(100vw - 40px); right:-10px; }
 }
 </style>
 </head>
@@ -599,6 +526,7 @@ select:focus {
 
 <div class="main">
 
+  <!-- INPUT -->
   <div id="s-input">
     <div class="input-top">
       <div class="card">
@@ -652,11 +580,13 @@ select:focus {
     <button class="btn" id="btngen">Générer QCM + Flashcards</button>
   </div>
 
+  <!-- LOADING -->
   <div id="s-loading">
     <div class="spinner"></div>
     <div class="lmsg" id="lmsg">Lecture du cours…</div>
   </div>
 
+  <!-- RESULTS -->
   <div id="s-results">
     <div class="rh">
       <div class="rtitle" id="rtitle"></div>
@@ -691,35 +621,24 @@ select:focus {
 </div>
 
 <!-- 🤖 AI CHATBOT -->
-<div class="ai-chat-container">
-  <div class="ai-window" id="aiWindow">
+<div class="ai-container">
+  <div class="ai-chat" id="aiChat">
     <div class="ai-header">
-      <div class="ai-title">
+      <div class="ai-header-title">
         <span>🤖</span>
         <span>MEDX Assistant</span>
-        <span class="ai-status"></span>
       </div>
-      <button class="ai-close" onclick="toggleAI()">×</button>
+      <button class="ai-close" onclick="toggleChat()">×</button>
     </div>
-    <div class="ai-context" id="aiContext">
-      <span class="ai-context-icon">📚</span>
-      <span id="aiContextText">Aucun cours chargé</span>
+    <div class="ai-body" id="aiBody">
+      <div class="ai-msg bot">👋 Salam! Je suis ton assistant MEDX. Charge un cours et pose-moi tes questions!</div>
     </div>
-    <div class="ai-messages" id="aiMessages">
-      <div class="ai-message bot">
-        👋 Salam! Je suis ton assistant MEDX. Charge un cours et pose-moi tes questions!
-      </div>
-    </div>
-    <div class="ai-input-area">
-      <input type="text" class="ai-input" id="aiInput" placeholder="Écris ta question..." onkeypress="if(event.key==='Enter')sendAIMessage()">
-      <button class="ai-send" id="aiSend" onclick="sendAIMessage()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-        </svg>
-      </button>
+    <div class="ai-footer">
+      <input type="text" class="ai-input" id="aiInput" placeholder="Écris ta question..." onkeypress="if(event.key==='Enter')sendMessage()">
+      <button class="ai-send" onclick="sendMessage()">Envoyer</button>
     </div>
   </div>
-  <button class="ai-toggle" id="aiToggle" onclick="toggleAI()">🤖</button>
+  <button class="ai-button" onclick="toggleChat()">🤖</button>
 </div>
 
 <script>
@@ -730,7 +649,7 @@ const LETTERS = ['A','B','C','D'];
 const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des QCM…','Création des Flashcards…'];
 let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
 let pdfText = '';
-let currentContext = '';
+let courseLoaded = false;
 
 // ── PDF UPLOAD ──────────────────────────────────────────
 const dz = G('dropzone');
@@ -779,11 +698,10 @@ async function readPDF(file) {
     if (pdfText.length < 50) throw new Error("PDF vide ou texte non lisible");
 
     G('txtin').value = pdfText;
+    courseLoaded = true;
     
-    // ✅ تحديث سياق AI
-    currentContext = pdfText.slice(0, 3000);
-    updateAIContext(file.name);
-    addAIMessage('bot', `✅ J'ai analysé "${file.name}" (${pdf.numPages} pages). Pose-moi tes questions!`);
+    // إضافة رسالة في الدردشة
+    addMessage('bot', `✅ J'ai analysé "${file.name}" (${pdf.numPages} pages). Pose-moi tes questions!`);
 
     status.className = 'pdf-status ok';
     status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères`;
@@ -791,69 +709,47 @@ async function readPDF(file) {
     status.className = 'pdf-status err';
     status.textContent = '✗ ' + e.message;
     pdfText = '';
+    courseLoaded = false;
   }
 }
 
 // ── AI CHATBOT ──────────────────────────────────────────
-function toggleAI() {
-  const win = G('aiWindow');
-  win.classList.toggle('open');
+function toggleChat() {
+  const chat = G('aiChat');
+  chat.classList.toggle('show');
 }
 
-function updateAIContext(filename) {
-  G('aiContextText').textContent = filename ? `Cours: ${filename.slice(0, 25)}${filename.length>25?'...':''}` : 'Aucun cours chargé';
-}
-
-function addAIMessage(sender, text) {
-  const container = G('aiMessages');
+function addMessage(sender, text) {
+  const body = G('aiBody');
   const msg = document.createElement('div');
-  msg.className = `ai-message ${sender}`;
+  msg.className = 'ai-msg ' + sender;
   msg.textContent = text;
-  container.appendChild(msg);
-  container.scrollTop = container.scrollHeight;
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
 }
 
-function showAITyping() {
-  const container = G('aiMessages');
-  const typing = document.createElement('div');
-  typing.className = 'ai-message bot typing';
-  typing.id = 'aiTyping';
-  typing.textContent = '✍️ Je réfléchis...';
-  container.appendChild(typing);
-  container.scrollTop = container.scrollHeight;
-}
-
-function hideAITyping() {
-  const typing = G('aiTyping');
-  if (typing) typing.remove();
-}
-
-async function sendAIMessage() {
+async function sendMessage() {
   const input = G('aiInput');
-  const sendBtn = G('aiSend');
-  const question = input.value.trim();
-  
-  if (!question) return;
-  
-  addAIMessage('user', question);
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage('user', text);
   input.value = '';
-  sendBtn.disabled = true;
-  showAITyping();
+  addMessage('bot', '✍️ Je réfléchis...');
 
   try {
-    const context = currentContext || G('txtin').value.slice(0, 3000);
-    
+    const context = pdfText || G('txtin').value;
     const prompt = `Tu es un assistant médical expert. Réponds à cette question basée sur le cours suivant:
 
 COURS:
 """
-${context}
+${context.slice(0, 3000)}
 """
 
-QUESTION: ${question}
+QUESTION: ${text}
 
 Instructions:
-- Réponds de façon concise et claire (max 3-4 phrases)
+- Réponds de façon concise (2-3 phrases max)
 - Si la question n'est pas liée au cours, dis-le poliment
 - Utilise la même langue que la question`;
 
@@ -865,20 +761,26 @@ Instructions:
       })
     });
 
-    hideAITyping();
-    
+    // إزالة "Je réfléchis..."
+    const typing = G('aiBody').lastChild;
+    if (typing && typing.textContent === '✍️ Je réfléchis...') {
+      typing.remove();
+    }
+
     if (!res.ok) throw new Error('Erreur de connexion');
     
     const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content || "Désolé, je n'ai pas pu traiter votre demande.";
+    const reply = data.choices?.[0]?.message?.content || "Désolé, je n'ai pas pu répondre.";
     
-    addAIMessage('bot', reply);
-    
+    addMessage('bot', reply);
+
   } catch(e) {
-    hideAITyping();
-    addAIMessage('bot', '❌ Erreur: ' + e.message);
-  } finally {
-    sendBtn.disabled = false;
+    // إزالة "Je réfléchis..."
+    const typing = G('aiBody').lastChild;
+    if (typing && typing.textContent === '✍️ Je réfléchis...') {
+      typing.remove();
+    }
+    addMessage('bot', '❌ Erreur: ' + e.message);
   }
 }
 
@@ -1046,8 +948,7 @@ G('tfb').onclick = () => {
 G('btnback').onclick = () => {
   G('txtin').value = '';
   pdfText = '';
-  currentContext = '';
-  updateAIContext('');
+  courseLoaded = false;
   G('pdfstatus').style.display = 'none';
   G('errmsg').style.display = 'none';
   show('input');
