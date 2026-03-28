@@ -13,8 +13,8 @@
   --bg:#fafafa; --white:#ffffff;
   --border:#e8e8e8; --border2:#d0d0d0;
   --text:#0a0a0a; --muted:#6b6b6b; --muted2:#999;
-  --success:#22c55e; --success-bg:#f0fdf4;
-  --danger:#ef4444; --danger-bg:#fef2f2;
+  --success:#22c55e; --success-bg:#f0fdf4; --success-light:#dcfce7;
+  --danger:#ef4444; --danger-bg:#fef2f2; --danger-light:#fee2e2;
   --accent:#3b82f6; --accent-light:#eff6ff;
   --gradient-x: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
@@ -27,9 +27,11 @@ body {
   line-height:1.6;
 }
 
+/* NAVBAR - أنيق وعصري */
 nav {
   background:rgba(255,255,255,0.85);
   backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   padding:0 28px; 
   height:64px;
@@ -45,6 +47,7 @@ nav {
   font-family:'Syne',sans-serif; 
   font-weight:800; 
   font-size:22px;
+  letter-spacing:-0.5px;
   display:flex;
   align-items:center;
   gap:2px;
@@ -55,8 +58,10 @@ nav {
   background:var(--gradient-x);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+  background-clip:text;
   font-size:26px;
   font-weight:900;
+  transform:translateY(-1px);
 }
 
 .telegram-link {
@@ -79,16 +84,25 @@ nav {
   transform:translateY(-1px);
 }
 
-.telegram-icon { width:18px; height:18px; }
+.telegram-icon {
+  width:18px;
+  height:18px;
+}
 
 .main { max-width:850px; margin:0 auto; padding:32px 24px; }
 
+/* CARDS - زجاجية أنيقة */
 .card { 
   background:var(--white); 
   border:1px solid var(--border); 
   border-radius:16px; 
   padding:24px;
   box-shadow:0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.04);
+  transition:box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow:0 4px 12px rgba(0,0,0,0.05), 0 16px 48px rgba(0,0,0,0.03);
 }
 
 .clabel { 
@@ -102,6 +116,7 @@ nav {
 
 .input-top { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
 
+/* TEXTAREA - حديثة */
 textarea {
   width:100%; 
   min-height:200px; 
@@ -126,6 +141,7 @@ textarea:focus {
 
 textarea::placeholder { color:var(--muted2); }
 
+/* DROPZONE */
 .drop-zone {
   border:2px dashed var(--border2); 
   border-radius:12px;
@@ -133,6 +149,7 @@ textarea::placeholder { color:var(--muted2); }
   text-align:center; 
   cursor:pointer;
   position:relative; 
+  transition:all 0.2s; 
   min-height:200px;
   display:flex; 
   flex-direction:column; 
@@ -140,7 +157,6 @@ textarea::placeholder { color:var(--muted2); }
   justify-content:center; 
   gap:10px;
   background:#fafafa;
-  transition:all 0.2s;
 }
 
 .drop-zone:hover, .drop-zone.drag { 
@@ -149,7 +165,7 @@ textarea::placeholder { color:var(--muted2); }
 }
 
 .drop-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-.drop-icon { font-size:32px; }
+.drop-icon { font-size:32px; opacity:0.7; }
 .drop-title { font-size:14px; font-weight:600; color:var(--text); }
 .drop-sub { font-size:12px; color:var(--muted); }
 
@@ -162,10 +178,23 @@ textarea::placeholder { color:var(--muted2); }
   font-weight:500;
 }
 
-.pdf-status.ok { background:var(--success-bg); color:#15803d; border:1px solid #86efac; }
-.pdf-status.loading { background:var(--accent-light); color:var(--accent); border:1px solid #93c5fd; }
-.pdf-status.err { background:var(--danger-bg); color:#991b1b; border:1px solid #fca5a5; }
+.pdf-status.ok { 
+  background:var(--success-bg); 
+  color:#15803d; 
+  border:1px solid #86efac; 
+}
+.pdf-status.loading { 
+  background:var(--accent-light); 
+  color:var(--accent); 
+  border:1px solid #93c5fd; 
+}
+.pdf-status.err { 
+  background:var(--danger-bg); 
+  color:#991b1b; 
+  border:1px solid #fca5a5; 
+}
 
+/* SETTINGS */
 .srow { display:flex; gap:12px; flex-wrap:wrap; }
 .field { display:flex; flex-direction:column; gap:6px; flex:1; min-width:120px; }
 .field label { font-size:12px; font-weight:500; color:var(--muted); }
@@ -180,6 +209,7 @@ select {
   font-family:'DM Sans',sans-serif; 
   outline:none;
   cursor:pointer;
+  transition:all 0.2s;
 }
 
 select:focus {
@@ -187,6 +217,7 @@ select:focus {
   box-shadow:0 0 0 3px var(--accent-light);
 }
 
+/* BUTTON - أنيق */
 .btn {
   width:100%; 
   margin-top:16px; 
@@ -200,10 +231,21 @@ select:focus {
   font-family:'DM Sans',sans-serif;
   cursor:pointer; 
   transition:all 0.2s;
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);
 }
 
-.btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px -5px rgba(0,0,0,0.15); }
-.btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+.btn:hover { 
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px -5px rgba(0,0,0,0.15);
+}
+
+.btn:active { transform:translateY(0); }
+
+.btn:disabled { 
+  opacity:0.4; 
+  cursor:not-allowed;
+  transform:none;
+}
 
 .errmsg {
   background:var(--danger-bg); 
@@ -217,6 +259,7 @@ select:focus {
   font-weight:500;
 }
 
+/* LOADING */
 #s-loading { display:none; text-align:center; padding:100px 20px; }
 .spinner {
   width:48px; height:48px; 
@@ -229,8 +272,14 @@ select:focus {
 @keyframes spin { to { transform:rotate(360deg); } }
 .lmsg { font-size:14px; color:var(--muted); font-weight:500; }
 
+/* RESULTS */
 #s-results { display:none; }
-.rh { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.rh { 
+  display:flex; 
+  align-items:center; 
+  justify-content:space-between; 
+  margin-bottom:20px; 
+}
 .rtitle { font-size:18px; font-weight:700; }
 .btn-back {
   font-size:13px; 
@@ -242,9 +291,15 @@ select:focus {
   cursor:pointer; 
   font-family:'DM Sans',sans-serif; 
   font-weight:500;
+  transition:all 0.2s;
 }
-.btn-back:hover { color:var(--text); border-color:var(--border2); }
+.btn-back:hover { 
+  color:var(--text); 
+  border-color:var(--border2);
+  background:#fafafa;
+}
 
+/* TABS */
 .tabs {
   display:flex; 
   gap:4px; 
@@ -264,13 +319,16 @@ select:focus {
   cursor:pointer; 
   font-family:'DM Sans',sans-serif; 
   color:var(--muted); 
+  transition:all 0.2s;
 }
 .tb.on { 
   background:var(--white); 
   color:var(--text); 
   border:1.5px solid var(--border);
+  box-shadow:0 1px 3px rgba(0,0,0,0.05);
 }
 
+/* SCORE */
 .scorebar {
   background:var(--success-bg); 
   border:1.5px solid #86efac;
@@ -283,6 +341,7 @@ select:focus {
   display:none;
 }
 
+/* QCM - تصميم جديد */
 .qprog { font-size:12px; color:var(--muted); margin-bottom:14px; font-weight:500; }
 
 .qcard { 
@@ -291,11 +350,32 @@ select:focus {
   border-radius:14px; 
   padding:22px; 
   margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.02);
+  transition:all 0.2s;
 }
 
-.qnum { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; font-weight:600; }
-.qtext { font-size:15px; font-weight:600; margin-bottom:16px; line-height:1.6; }
+.qcard:hover {
+  box-shadow:0 4px 16px rgba(0,0,0,0.04);
+}
 
+.qnum { 
+  font-size:11px; 
+  color:var(--muted); 
+  text-transform:uppercase; 
+  letter-spacing:1px; 
+  margin-bottom:8px;
+  font-weight:600;
+}
+
+.qtext { 
+  font-size:15px; 
+  font-weight:600; 
+  margin-bottom:16px; 
+  line-height:1.6;
+  color:var(--text);
+}
+
+/* OPTIONS - ألوان واضحة */
 .opt {
   display:flex; 
   align-items:flex-start; 
@@ -307,13 +387,29 @@ select:focus {
   cursor:pointer; 
   font-size:14px;
   transition:all 0.15s; 
+  color:var(--text); 
   background:var(--white);
   font-weight:500;
 }
 
-.opt:hover:not(.lk) { border-color:var(--border2); background:#fafafa; }
-.opt.good { background:var(--success-bg) !important; border-color:var(--success) !important; color:#15803d !important; }
-.opt.wrong { background:var(--danger-bg) !important; border-color:var(--danger) !important; color:#991b1b !important; }
+.opt:hover:not(.lk) { 
+  border-color:var(--border2);
+  background:#fafafa;
+}
+
+/* ✅ إجابة صحيحة - أخضر */
+.opt.good { 
+  background:var(--success-bg) !important; 
+  border-color:var(--success) !important; 
+  color:#15803d !important;
+}
+
+/* ❌ إجابة خاطئة - أحمر */
+.opt.wrong { 
+  background:var(--danger-bg) !important; 
+  border-color:var(--danger) !important; 
+  color:#991b1b !important;
+}
 
 .ol { 
   width:28px; 
@@ -326,9 +422,20 @@ select:focus {
   justify-content:center; 
   font-size:12px; 
   font-weight:700;
+  background:var(--white);
 }
-.opt.good .ol { background:var(--success); border-color:var(--success); color:white; }
-.opt.wrong .ol { background:var(--danger); border-color:var(--danger); color:white; }
+
+.opt.good .ol {
+  background:var(--success);
+  border-color:var(--success);
+  color:white;
+}
+
+.opt.wrong .ol {
+  background:var(--danger);
+  border-color:var(--danger);
+  color:white;
+}
 
 .expl { 
   font-size:13px; 
@@ -340,6 +447,7 @@ select:focus {
   display:none;
 }
 
+/* FLASHCARDS */
 .fnav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .fcnt { font-size:14px; color:var(--muted); font-weight:500; }
 .farr { 
@@ -354,8 +462,15 @@ select:focus {
   display:flex; 
   align-items:center; 
   justify-content:center; 
+  transition:all 0.2s;
+  font-weight:600;
 }
-.farr:disabled { opacity:0.3; }
+.farr:hover:not(:disabled) { 
+  border-color:var(--text); 
+  color:var(--text);
+  background:#fafafa;
+}
+.farr:disabled { opacity:0.3; cursor:not-allowed; }
 
 .fcard {
   background:var(--white); 
@@ -370,16 +485,59 @@ select:focus {
   align-items:center; 
   justify-content:center;
   position:relative; 
+  transition:all 0.3s;
+  box-shadow:0 4px 12px rgba(0,0,0,0.03);
 }
-.fside { position:absolute; top:16px; left:18px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted2); font-weight:600; }
-.ffront { font-size:17px; font-weight:600; line-height:1.7; }
-.fhint { font-size:12px; color:var(--muted2); margin-top:16px; font-weight:500; }
-.fback { font-size:15px; color:var(--muted); margin-top:20px; line-height:1.8; border-top:2px solid var(--border); padding-top:20px; display:none; font-weight:500; }
+
+.fcard:hover { 
+  border-color:var(--border2);
+  box-shadow:0 8px 24px rgba(0,0,0,0.06);
+}
+
+.fside { 
+  position:absolute; 
+  top:16px; 
+  left:18px; 
+  font-size:11px; 
+  letter-spacing:1.5px; 
+  text-transform:uppercase; 
+  color:var(--muted2);
+  font-weight:600;
+}
+
+.ffront { 
+  font-size:17px; 
+  font-weight:600; 
+  line-height:1.7;
+  color:var(--text);
+}
+
+.fhint { 
+  font-size:12px; 
+  color:var(--muted2); 
+  margin-top:16px;
+  font-weight:500;
+}
+
+.fback { 
+  font-size:15px; 
+  color:var(--muted); 
+  margin-top:20px; 
+  line-height:1.8; 
+  border-top:2px solid var(--border); 
+  padding-top:20px; 
+  display:none;
+  font-weight:500;
+}
 
 @media(max-width:640px){
   .input-top { grid-template-columns:1fr; }
   .srow { flex-direction:column; }
   .main { padding:20px 16px; }
+  nav { padding:0 16px; height:60px; }
+  .logo { font-size:20px; }
+  .telegram-link { padding:6px 12px; font-size:12px; }
+  .telegram-icon { width:16px; height:16px; }
 }
 </style>
 </head>
@@ -399,12 +557,17 @@ select:focus {
 
 <div class="main">
 
+  <!-- INPUT -->
   <div id="s-input">
     <div class="input-top">
+
+      <!-- Texte -->
       <div class="card">
         <div class="clabel">Coller le texte</div>
-        <textarea id="txtin" placeholder="اكتب هنا النص لي راك باغي تخدملو qcm او flashcards…"></textarea>
+        <textarea id="txtin" placeholder="اكتب هنا النص لي راك باغي تخدملو qcm او flashcards…&#10;&#10;Exemple: Génétique du cancer, Anatomie, Physiologie..."></textarea>
       </div>
+
+      <!-- PDF Upload -->
       <div class="card">
         <div class="clabel">Uploader un PDF</div>
         <div class="drop-zone" id="dropzone">
@@ -415,8 +578,10 @@ select:focus {
         </div>
         <div class="pdf-status" id="pdfstatus"></div>
       </div>
+
     </div>
 
+    <!-- Settings -->
     <div class="card">
       <div class="srow">
         <div class="field">
@@ -452,11 +617,13 @@ select:focus {
     <button class="btn" id="btngen">Générer QCM + Flashcards</button>
   </div>
 
+  <!-- LOADING -->
   <div id="s-loading">
     <div class="spinner"></div>
     <div class="lmsg" id="lmsg">Lecture du cours…</div>
   </div>
 
+  <!-- RESULTS -->
   <div id="s-results">
     <div class="rh">
       <div class="rtitle" id="rtitle"></div>
@@ -499,7 +666,9 @@ const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des 
 let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
 let pdfText = '';
 
+// ── PDF UPLOAD ──────────────────────────────────────────
 const dz = G('dropzone');
+
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
 dz.addEventListener('drop', e => {
@@ -507,6 +676,7 @@ dz.addEventListener('drop', e => {
   const f = e.dataTransfer.files[0];
   if (f && f.type === 'application/pdf') readPDF(f);
 });
+
 G('pdffile').addEventListener('change', e => {
   const f = e.target.files[0];
   if (f) readPDF(f);
@@ -517,43 +687,64 @@ async function readPDF(file) {
   status.className = 'pdf-status loading';
   status.textContent = '⏳ Lecture du PDF…';
   status.style.display = 'block';
+
   pdfText = '';
 
   try {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
     let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
+      
+      // تجميع النص مع مراعاة الترتيب
       let lastY = 0;
       let pageText = "";
       
       for (let j = 0; j < textContent.items.length; j++) {
         const item = textContent.items[j];
         const y = item.transform[5];
-        if (j > 0 && Math.abs(y - lastY) > 5) pageText += "\n";
+        
+        if (j > 0 && Math.abs(y - lastY) > 5) {
+          pageText += "\n";
+        }
+        
         pageText += item.str;
         lastY = y;
       }
+      
       fullText += pageText + "\n\n";
       status.textContent = `⏳ Lecture… Page ${i}/${pdf.numPages}`;
     }
 
-    pdfText = fullText.replace(/\s+/g, ' ').replace(/\n\s*\n/g, '\n\n').trim();
-    if (pdfText.length < 50) throw new Error("PDF vide ou texte non lisible");
+    // تنظيف النص
+    pdfText = fullText
+      .replace(/\s+/g, ' ')
+      .replace(/\n\s*\n/g, '\n\n')
+      .trim();
 
+    if (pdfText.length < 50) {
+      throw new Error("PDF vide ou texte non lisible");
+    }
+
+    // ✅ عرض النص الكامل (بدون تقطيع!)
     G('txtin').value = pdfText;
+
     status.className = 'pdf-status ok';
-    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères`;
+    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères extraits`;
+
   } catch(e) {
+    console.error("PDF Error:", e);
     status.className = 'pdf-status err';
     status.textContent = '✗ ' + e.message;
     pdfText = '';
   }
 }
 
+// ── GENERATE ────────────────────────────────────────────
 G('btngen').onclick = generate;
 
 async function generate() {
@@ -592,16 +783,24 @@ INSTRUCTIONS:
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
 
     clearInterval(timer);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP ${res.status}`);
+    }
     
     const data = await res.json();
     if (data.error) throw new Error(data.error);
 
     const raw = data.choices?.[0]?.message?.content || '';
+    
+    // استخراج JSON
     let jsonStr = raw;
     const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
     if (codeBlockMatch) jsonStr = codeBlockMatch[1];
@@ -624,6 +823,7 @@ INSTRUCTIONS:
     show('input');
     err.textContent = 'Erreur : ' + e.message;
     err.style.display = 'block';
+    console.error("Generate error:", e);
   }
 }
 
@@ -658,7 +858,11 @@ function render() {
 
 function escapeHtml(text) {
   if (!text) return '';
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function pick(o) {
@@ -666,8 +870,13 @@ function pick(o) {
   const opts = G('qcont').querySelectorAll(`[data-qi="${qi}"]`);
   if (opts[0].classList.contains('lk')) return;
   
-  if (oi === qcm[qi].correct) { o.classList.add('good'); correct++; }
-  else { o.classList.add('wrong'); opts[qcm[qi].correct].classList.add('good'); }
+  if (oi === qcm[qi].correct) { 
+    o.classList.add('good'); 
+    correct++; 
+  } else { 
+    o.classList.add('wrong'); 
+    opts[qcm[qi].correct].classList.add('good'); 
+  }
   
   opts.forEach(x => x.classList.add('lk'));
   G('ex'+qi).style.display = 'block';
@@ -710,10 +919,12 @@ G('tqb').onclick = () => {
   G('t-qcm').style.display='block'; G('t-flash').style.display='none';
   G('tqb').classList.add('on'); G('tfb').classList.remove('on');
 };
+
 G('tfb').onclick = () => {
   G('t-flash').style.display='block'; G('t-qcm').style.display='none';
   G('tfb').classList.add('on'); G('tqb').classList.remove('on');
 };
+
 G('btnback').onclick = () => {
   G('txtin').value = '';
   pdfText = '';
