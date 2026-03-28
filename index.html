@@ -700,7 +700,6 @@ async function readPDF(file) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       
-      // تجميع النص مع مراعاة الترتيب
       let lastY = 0;
       let pageText = "";
       
@@ -720,7 +719,6 @@ async function readPDF(file) {
       status.textContent = `⏳ Lecture… Page ${i}/${pdf.numPages}`;
     }
 
-    // تنظيف النص
     pdfText = fullText
       .replace(/\s+/g, ' ')
       .replace(/\n\s*\n/g, '\n\n')
@@ -730,7 +728,6 @@ async function readPDF(file) {
       throw new Error("PDF vide ou texte non lisible");
     }
 
-    // ✅ عرض النص الكامل (بدون تقطيع!)
     G('txtin').value = pdfText;
 
     status.className = 'pdf-status ok';
@@ -759,6 +756,11 @@ async function generate() {
   }
 
   const nbq = G('nbq').value, nbf = G('nbf').value, lng = G('lng').value;
+  
+  // ✅ نكتشف الهاتف ونقلل النص
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const maxChars = isMobile ? 2000 : 4000;
+  
   show('loading');
 
   let mi = 0;
@@ -768,62 +770,97 @@ async function generate() {
 
 COURS:
 """
-${txt.slice(0, 4000)}
+${txt.slice(0, maxChars)}
 """
 
 INSTRUCTIONS:
 - QCM: questions réalistes avec 4 options (A,B,C,D), une seule bonne réponse
 - Flashcards: format question/réponse concis
 - Langue: ${lng}
-- Réponds UNIQUEMENT en JSON valide:
+- Réponds UNIQUEMENT en JSON valide, sans texte avant ou après
 
+Format exact:
 {"qcm":[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."}],"flashcards":[{"front":"...","back":"..."}]}`;
 
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
+  // ✅ محاولتين للهاتف
+  const MAX_RETRIES = isMobile ? 2 : 1;
+  
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), isMobile ? 15000 : 30000);
 
-    clearInterval(timer);
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP ${res.status}`);
+      const res = await fetch('/api/chat?_=' + Date.now(), {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: prompt }]
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      clearInterval(timer);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${res.status}`);
+      }
+      
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      const raw = data.choices?.[0]?.message?.content || '';
+      
+      // ✅ PARSING محسّن
+      let jsonStr = raw;
+      
+      // نشيل ```json ```
+      const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      if (codeBlockMatch) jsonStr = codeBlockMatch[1];
+      
+      // نلقى أول { وآخر }
+      const firstBrace = jsonStr.indexOf('{');
+      const lastBrace = jsonStr.lastIndexOf('}');
+      
+      if (firstBrace === -1 || lastBrace === -1 || lastBrace < firstBrace) {
+        throw new Error('Réponse invalide du modèle');
+      }
+      
+      jsonStr = jsonStr.slice(firstBrace, lastBrace + 1).trim();
+      
+      // ننظف
+      jsonStr = jsonStr
+        .replace(/[\u0000-\u001F]/g, '')
+        .replace(/\n/g, ' ');
+      
+      const parsed = JSON.parse(jsonStr);
+      qcm = parsed.qcm || [];
+      flash = parsed.flashcards || [];
+      
+      if (!qcm.length && !flash.length) throw new Error('Aucun contenu généré');
+
+      answered = 0; correct = 0; fi = 0; fo = false;
+      render();
+      show('results');
+      return; // ✅ نجح
+      
+    } catch(e) {
+      clearInterval(timer);
+      console.error('Tentative', attempt + 1, 'échouée:', e);
+      
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise(r => setTimeout(r, 1000)); // نستنى ثانية
+      } else {
+        // فشلت كل المحاولات
+        show('input');
+        err.textContent = 'Erreur : ' + e.message;
+        err.style.display = 'block';
+      }
     }
-    
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    const raw = data.choices?.[0]?.message?.content || '';
-    
-    // استخراج JSON
-    let jsonStr = raw;
-    const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-    if (codeBlockMatch) jsonStr = codeBlockMatch[1];
-    
-    const jsonMatch = jsonStr.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('Réponse invalide du modèle');
-    
-    const parsed = JSON.parse(jsonMatch[0]);
-    qcm = parsed.qcm || [];
-    flash = parsed.flashcards || [];
-    
-    if (!qcm.length && !flash.length) throw new Error('Aucun contenu généré');
-
-    answered = 0; correct = 0; fi = 0; fo = false;
-    render();
-    show('results');
-    
-  } catch(e) {
-    clearInterval(timer);
-    show('input');
-    err.textContent = 'Erreur : ' + e.message;
-    err.style.display = 'block';
-    console.error("Generate error:", e);
   }
 }
 
