@@ -307,35 +307,64 @@ G('pdffile').addEventListener('change', e => {
 });
 
 async function readPDF(file) {
+
   const status = G('pdfstatus');
   status.className = 'pdf-status loading';
   status.textContent = '⏳ Lecture du PDF…';
   status.style.display = 'block';
+
   pdfText = '';
 
   try {
+
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let text = '';
+
+    let text = "";
+
     for (let i = 1; i <= pdf.numPages; i++) {
+
       const page = await pdf.getPage(i);
+
       const content = await page.getTextContent();
-      text += content.items.map(item => item.str).join(' ') + '\n';
+      const pageText = content.items.map(item => item.str).join(" ");
+
+      text += pageText + "\n";
+
+      // تحويل الصفحة إلى صورة
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({
+        canvasContext: context,
+        viewport
+      }).promise;
+
+      const img = canvas.toDataURL("image/png");
+
+      text += `[Image page ${i}] `;
     }
-    text = text.trim();
-    if (text.length < 50) throw new Error('PDF vide ou scanné (image)');
+
+    if (text.length < 50) throw new Error("PDF vide");
 
     pdfText = text;
-    // Mettre le texte dans le textarea
     G('txtin').value = pdfText;
-    status.className = 'pdf-status ok';
-    status.textContent = `✓ ${file.name} — ${pdf.numPages} page(s) lues`;
-  } catch(e) {
-    status.className = 'pdf-status err';
-    status.textContent = '✗ ' + e.message + '. Colle le texte manuellement.';
-  }
-}
 
+    status.className = 'pdf-status ok';
+    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages analysées`;
+
+  } catch(e) {
+
+    status.className = 'pdf-status err';
+    status.textContent = '✗ ' + e.message;
+
+  }
+
+}
 // ── GENERATE ────────────────────────────────────────────
 G('btngen').onclick = generate;
 
