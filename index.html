@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MEDX — Study AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #f9fafb; --white: #ffffff;
+  --border: #e5e7eb; --border2: #d1d5db;
+  --text: #111; --muted: #6b7280; --muted2: #9ca3af;
+  --success-bg: #f0fdf4; --success-border: #86efac; --success-text: #166534;
+  --danger-bg: #fef2f2; --danger-border: #fca5a5; --danger-text: #991b1b;
+  --info-bg: #eff6ff; --info-text: #1d4ed8;
+}
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; }
+
+nav {
+  background:var(--white); border-bottom:1px solid var(--border);
+  padding:0 24px; height:52px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:10;
+}
+.logo { font-family:'Syne',sans-serif; font-weight:800; font-size:17px; }
+.logo span { font-weight:400; color:var(--muted); font-size:13px; }
+.nav-tag { font-size:11px; color:var(--muted2); }
+
+.main { max-width:800px; margin:0 auto; padding:24px 20px; }
+
+/* CARDS */
+.card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:18px; }
+.clabel { font-size:11px; font-weight:500; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted2); margin-bottom:10px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+
+textarea {
+  width:100%; height:140px; resize:none;
+  background:#f9fafb; border:1px solid var(--border);
+  border-radius:8px; padding:10px 12px;
+  font-family:'DM Sans',sans-serif; font-size:13px;
+  color:var(--text); outline:none; line-height:1.5;
+  transition:border-color .15s;
+}
+textarea:focus { border-color:#9ca3af; }
+textarea::placeholder { color:var(--muted2); }
+
+.pdf-box {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; text-align:center; gap:8px;
+  height:100%; min-height:140px; padding:20px;
+  border:1px dashed var(--border2); border-radius:8px;
+}
+.pdf-box .icon { font-size:28px; }
+.pdf-box p { font-size:13px; font-weight:500; color:var(--text); }
+.pdf-box small { font-size:12px; color:var(--muted); line-height:1.5; }
+.pdf-box kbd { background:var(--bg); border:1px solid var(--border2); border-radius:4px; padding:1px 6px; font-size:11px; font-family:monospace; }
+
+.srow { display:flex; gap:10px; flex-wrap:wrap; }
+.field { display:flex; flex-direction:column; gap:4px; flex:1; min-width:110px; }
+.field label { font-size:11px; color:var(--muted); }
+select {
+  background:#f9fafb; border:1px solid var(--border);
+  border-radius:8px; padding:7px 10px; font-size:13px;
+  color:var(--text); font-family:'DM Sans',sans-serif; outline:none;
+}
+
+.btn {
+  width:100%; margin-top:12px; padding:13px;
+  background:var(--text); color:var(--white);
+  border:none; border-radius:10px;
+  font-size:14px; font-weight:500;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer; transition:opacity .15s;
+}
+.btn:hover { opacity:0.85; }
+.btn:disabled { opacity:0.35; cursor:not-allowed; }
+
+.err {
+  background:var(--danger-bg); border:1px solid var(--danger-border);
+  border-radius:8px; padding:10px 14px;
+  font-size:13px; color:var(--danger-text); margin-top:10px; display:none;
+}
+
+/* LOADING */
+#s-loading { display:none; text-align:center; padding:80px 20px; }
+.spinner {
+  width:40px; height:40px; border-radius:50%;
+  border:2px solid var(--border); border-top-color:var(--text);
+  animation:spin .8s linear infinite; margin:0 auto 16px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.lmsg { font-size:13px; color:var(--muted); }
+
+/* RESULTS */
+#s-results { display:none; }
+.rh { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.rtitle { font-size:15px; font-weight:500; }
+.btn-back {
+  font-size:12px; color:var(--muted);
+  background:none; border:1px solid var(--border);
+  border-radius:8px; padding:5px 12px;
+  cursor:pointer; font-family:'DM Sans',sans-serif;
+  transition:all .15s;
+}
+.btn-back:hover { color:var(--text); border-color:var(--border2); }
+
+.tabs {
+  display:flex; gap:3px; background:#f3f4f6;
+  border-radius:8px; padding:3px;
+  width:fit-content; margin-bottom:14px;
+}
+.tb {
+  font-size:12px; font-weight:500; padding:5px 14px;
+  border-radius:6px; border:none; background:none;
+  cursor:pointer; font-family:'DM Sans',sans-serif;
+  color:var(--muted); transition:all .15s;
+}
+.tb.on {
+  background:var(--white); color:var(--text);
+  border:1px solid var(--border);
+}
+
+.scorebar {
+  background:var(--success-bg); border:1px solid var(--success-border);
+  border-radius:8px; padding:10px 14px;
+  font-size:13px; color:var(--success-text);
+  margin-bottom:12px; display:none;
+}
+.qprog { font-size:11px; color:var(--muted2); margin-bottom:10px; }
+
+/* QCM */
+.qcard { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:10px; }
+.qnum { font-size:10px; color:var(--muted2); text-transform:uppercase; letter-spacing:.8px; margin-bottom:5px; }
+.qtext { font-size:14px; font-weight:500; margin-bottom:12px; line-height:1.5; }
+.opt {
+  display:flex; align-items:flex-start; gap:8px;
+  padding:9px 11px; border-radius:8px; border:1px solid var(--border);
+  margin-bottom:6px; cursor:pointer; font-size:13px;
+  transition:all .12s; color:var(--text); background:var(--white);
+  user-select:none;
+}
+.opt:hover:not(.lk) { background:#f9fafb; border-color:var(--border2); }
+.opt.good { background:var(--success-bg); border-color:var(--success-border); color:var(--success-text); }
+.opt.wrong { background:var(--danger-bg); border-color:var(--danger-border); color:var(--danger-text); }
+.ol {
+  width:20px; height:20px; min-width:20px; border-radius:50%;
+  border:1px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:500;
+}
+.expl { font-size:12px; color:var(--muted); margin-top:10px; padding-top:10px; border-top:1px solid var(--border); line-height:1.5; display:none; }
+
+/* FLASHCARDS */
+.fnav { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.fcnt { font-size:13px; color:var(--muted); }
+.farr {
+  width:30px; height:30px; border:1px solid var(--border);
+  border-radius:8px; background:none; cursor:pointer;
+  font-size:13px; color:var(--muted);
+  display:flex; align-items:center; justify-content:center;
+  transition:all .15s;
+}
+.farr:hover:not(:disabled) { border-color:var(--border2); color:var(--text); }
+.farr:disabled { opacity:.3; cursor:not-allowed; }
+.fcard {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:12px; padding:36px 24px; text-align:center;
+  cursor:pointer; min-height:180px;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  position:relative; transition:border-color .15s;
+}
+.fcard:hover { border-color:var(--border2); }
+.fside { position:absolute; top:12px; left:14px; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--muted2); }
+.ffront { font-size:15px; font-weight:500; line-height:1.5; }
+.fhint { font-size:11px; color:var(--muted2); margin-top:12px; }
+.fback { font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6; border-top:1px solid var(--border); padding-top:14px; display:none; }
+
+@media(max-width:540px){
+  .grid2 { grid-template-columns:1fr; }
+  .srow { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">MEDX <span>— Study AI</span></div>
+  <div class="nav-tag">Faculté de Médecine</div>
+</nav>
+
+<div class="main">
+
+  <!-- INPUT -->
+  <div id="s-input">
+    <div class="grid2">
+      <div class="card">
+        <div class="clabel">Ton cours</div>
+        <textarea id="txtin" placeholder="Colle ton cours ici…&#10;&#10;Ex: La mitose est un processus de division cellulaire comportant 4 phases : prophase, métaphase, anaphase et télophase…"></textarea>
+      </div>
+      <div class="card">
+        <div class="clabel">Depuis un PDF</div>
+        <div class="pdf-box">
+          <div class="icon">📄</div>
+          <p>Comment copier un PDF</p>
+          <small>
+            Ouvre le PDF → <kbd>Ctrl+A</kbd> → <kbd>Ctrl+C</kbd><br>
+            puis colle dans le champ à gauche
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="srow">
+        <div class="field">
+          <label>QCM</label>
+          <select id="nbq">
+            <option value="5">5 questions</option>
+            <option value="10" selected>10 questions</option>
+            <option value="15">15 questions</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Flashcards</label>
+          <select id="nbf">
+            <option value="5">5 flashcards</option>
+            <option value="10" selected>10 flashcards</option>
+            <option value="15">15 flashcards</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Langue</label>
+          <select id="lng">
+            <option value="français">Français</option>
+            <option value="arabe">Arabe</option>
+            <option value="anglais">Anglais</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="err" id="errmsg"></div>
+    <button class="btn" id="btngen">Générer QCM + Flashcards</button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="s-loading">
+    <div class="spinner"></div>
+    <div class="lmsg" id="lmsg">Lecture du cours…</div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="s-results">
+    <div class="rh">
+      <div class="rtitle" id="rtitle"></div>
+      <button class="btn-back" id="btnback">← Nouveau cours</button>
+    </div>
+    <div class="scorebar" id="scorebar"></div>
+    <div class="tabs">
+      <button class="tb on" id="tqb">QCM</button>
+      <button class="tb" id="tfb">Flashcards</button>
+    </div>
+    <div id="t-qcm">
+      <div class="qprog" id="qprog"></div>
+      <div id="qcont"></div>
+    </div>
+    <div id="t-flash" style="display:none;">
+      <div class="fnav">
+        <div class="fcnt" id="fcnt"></div>
+        <div style="display:flex;gap:6px;">
+          <button class="farr" id="fprev">←</button>
+          <button class="farr" id="fnext">→</button>
+        </div>
+      </div>
+      <div class="fcard" id="fcard">
+        <div class="fside" id="fside">Question</div>
+        <div class="ffront" id="ffront"></div>
+        <div class="fhint" id="fhint">Cliquer pour révéler</div>
+        <div class="fback" id="fback"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const G = id => document.getElementById(id);
+const LETTERS = ['A','B','C','D'];
+let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
+
+const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des QCM…','Création des Flashcards…'];
+
+function show(s) {
+  ['input','loading','results'].forEach(x => G('s-'+x).style.display = x===s ? 'block' : 'none');
+}
+
+G('btngen').onclick = generate;
+
+async function generate() {
+  const txt = G('txtin').value.trim();
+  const err = G('errmsg');
+  err.style.display = 'none';
+  if (!txt || txt.length < 40) {
+    err.textContent = 'Colle ton cours dans le champ texte (minimum 40 caractères).';
+    err.style.display = 'block';
+    return;
+  }
+
+  const nbq = G('nbq').value, nbf = G('nbf').value, lng = G('lng').value;
+  show('loading');
+
+  let mi = 0;
+  const timer = setInterval(() => { G('lmsg').textContent = MSGS[++mi % MSGS.length]; }, 1600);
+
+  const prompt = `Tu es un expert en pédagogie médicale. Génère exactement ${nbq} QCM et ${nbf} flashcards en ${lng} à partir de ce cours.
+
+Cours:
+"""
+${txt.slice(0, 3500)}
+"""
+
+Réponds UNIQUEMENT avec du JSON valide, sans texte avant ou après, sans markdown:
+{"qcm":[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."}],"flashcards":[{"front":"...","back":"..."}]}
+
+Règles: correct = index 0-3. Distracteurs réalistes. Flashcards concises.`;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+    });
+
+    clearInterval(timer);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    if (data.error) throw new Error(typeof data.error === 'object' ? data.error.message : data.error);
+
+    const raw = data.choices?.[0]?.message?.content || '';
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('Réponse invalide du modèle');
+
+    const parsed = JSON.parse(match[0]);
+    qcm = parsed.qcm || [];
+    flash = parsed.flashcards || [];
+    if (!qcm.length && !flash.length) throw new Error('Aucun contenu généré');
+
+    answered = 0; correct = 0; fi = 0; fo = false;
+    render();
+    show('results');
+
+  } catch(e) {
+    clearInterval(timer);
+    show('input');
+    err.textContent = 'Erreur : ' + e.message;
+    err.style.display = 'block';
+  }
+}
+
+function render() {
+  G('rtitle').textContent = `${qcm.length} QCM · ${flash.length} Flashcards`;
+  G('qprog').textContent = `0 / ${qcm.length} répondues`;
+  G('scorebar').style.display = 'none';
+
+  const c = G('qcont'); c.innerHTML = '';
+  qcm.forEach((q, qi) => {
+    const d = document.createElement('div'); d.className = 'qcard';
+    d.innerHTML = `
+      <div class="qnum">Question ${qi+1}</div>
+      <div class="qtext">${q.question}</div>
+      <div class="opts">
+        ${q.options.map((o, oi) => `
+          <div class="opt" data-qi="${qi}" data-oi="${oi}">
+            <span class="ol">${LETTERS[oi]}</span>
+            <span>${o.replace(/^[A-D]\.\s*/,'')}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="expl" id="ex${qi}">${q.explanation || ''}</div>
+    `;
+    c.appendChild(d);
+  });
+
+  c.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => pick(o)));
+  renderFlash();
+}
+
+function pick(o) {
+  const qi = +o.dataset.qi, oi = +o.dataset.oi;
+  const opts = G('qcont').querySelectorAll(`[data-qi="${qi}"]`);
+  if (opts[0].classList.contains('lk')) return;
+  if (oi === qcm[qi].correct) { o.classList.add('good'); correct++; }
+  else { o.classList.add('wrong'); opts[qcm[qi].correct].classList.add('good'); }
+  opts.forEach(x => x.classList.add('lk'));
+  G('ex'+qi).style.display = 'block';
+  answered++;
+  G('qprog').textContent = `${answered} / ${qcm.length} répondues`;
+  if (answered === qcm.length) {
+    const b = G('scorebar');
+    b.textContent = `Score : ${correct} / ${qcm.length} (${Math.round(correct/qcm.length*100)}%)`;
+    b.style.display = 'block';
+    b.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function renderFlash() {
+  if (!flash.length) return;
+  fo = false;
+  const f = flash[fi];
+  G('fcnt').textContent = `${fi+1} / ${flash.length}`;
+  G('ffront').textContent = f.front;
+  G('fback').textContent = f.back;
+  G('fback').style.display = 'none';
+  G('fhint').style.display = 'block';
+  G('fside').textContent = 'Question';
+  G('fprev').disabled = fi === 0;
+  G('fnext').disabled = fi === flash.length - 1;
+}
+
+G('fcard').onclick = () => {
+  fo = !fo;
+  G('fback').style.display = fo ? 'block' : 'none';
+  G('fhint').style.display = fo ? 'none' : 'block';
+  G('fside').textContent = fo ? 'Réponse' : 'Question';
+};
+G('fprev').onclick = () => { if(fi>0){ fi--; renderFlash(); } };
+G('fnext').onclick = () => { if(fi<flash.length-1){ fi++; renderFlash(); } };
+
+G('tqb').onclick = () => {
+  G('t-qcm').style.display='block'; G('t-flash').style.display='none';
+  G('tqb').classList.add('on'); G('tfb').classList.remove('on');
+};
+G('tfb').onclick = () => {
+  G('t-flash').style.display='block'; G('t-qcm').style.display='none';
+  G('tfb').classList.add('on'); G('tqb').classList.remove('on');
+};
+G('btnback').onclick = () => {
+  G('txtin').value = '';
+  G('errmsg').style.display = 'none';
+  show('input');
+};
+</script>
+</body>
+</html>
