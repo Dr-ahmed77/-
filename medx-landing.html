@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MEDX — QCM & Flashcards en 10 secondes</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --card: #111111;
+    --border: rgba(255,255,255,0.08);
+    --border-hi: rgba(255,255,255,0.18);
+    --text: #f5f5f5;
+    --muted: #888;
+    --muted2: #444;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6%; height: 64px;
+    background: rgba(10,10,10,0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.4rem;
+    color: var(--white); letter-spacing: -0.5px;
+  }
+  .nav-cta {
+    background: var(--white); color: #000;
+    border: none; padding: 9px 20px;
+    border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; font-weight: 500; cursor: pointer;
+    transition: opacity .2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 100px 6% 80px; text-align: center;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.6rem, 6vw, 5rem);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -2px; margin-bottom: 1.4rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  h1 em { font-style: normal; color: var(--muted); }
+
+  .hero-sub {
+    max-width: 500px; color: var(--muted);
+    font-size: 1.05rem; line-height: 1.7;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .btn-white {
+    background: var(--white); color: #000;
+    border: none; padding: 13px 28px;
+    border-radius: 9px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 500; cursor: pointer;
+    transition: opacity .2s;
+  }
+  .btn-white:hover { opacity: 0.85; }
+  .btn-outline {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border-hi); padding: 13px 28px;
+    border-radius: 9px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; cursor: pointer;
+    transition: color .2s, border-color .2s;
+  }
+  .btn-outline:hover { color: var(--white); border-color: rgba(255,255,255,0.35); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOCKUP */
+  .mockup-wrap {
+    padding: 0 6% 80px;
+    display: flex; justify-content: center;
+  }
+  .mockup {
+    width: 100%; max-width: 820px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  .mockup-bar {
+    background: #161616; padding: 12px 18px;
+    display: flex; align-items: center; gap: 7px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r{background:#ff5f57;} .dot-y{background:#febc2e;} .dot-g{background:#28c840;}
+  .mockup-body {
+    padding: 24px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+  }
+
+  .panel-label {
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 1.5px;
+    color: var(--muted2); text-transform: uppercase; margin-bottom: 10px;
+  }
+  .drop-zone {
+    border: 1.5px dashed var(--border-hi);
+    border-radius: 10px; padding: 22px; text-align: center;
+    margin-bottom: 12px;
+  }
+  .drop-zone .icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .drop-zone p { font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; }
+  .drop-btn {
+    background: var(--white); color: #000; border: none;
+    padding: 8px 18px; border-radius: 7px;
+    font-size: 0.82rem; font-weight: 500; cursor: pointer; width: 100%;
+  }
+  .divider-or { text-align: center; font-size: 0.75rem; color: var(--muted2); margin: 10px 0; }
+  textarea {
+    width: 100%; background: #161616; border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px;
+    color: var(--muted); font-size: 0.8rem; resize: none; height: 80px;
+    font-family: 'DM Sans', sans-serif; outline: none;
+  }
+  .gen-btn {
+    width: 100%; margin-top: 10px;
+    background: var(--white); color: #000; border: none;
+    padding: 10px; border-radius: 8px;
+    font-size: 0.88rem; font-weight: 500; cursor: pointer;
+  }
+
+  .output-panel { display: flex; flex-direction: column; gap: 14px; }
+  .qcm-card {
+    background: #161616; border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px;
+  }
+  .qcm-q { font-size: 0.82rem; font-weight: 500; margin-bottom: 10px; }
+  .qcm-opt {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; color: var(--muted);
+    padding: 5px 8px; border-radius: 6px;
+    margin-bottom: 4px; cursor: pointer; transition: background .15s;
+  }
+  .qcm-opt:hover { background: rgba(255,255,255,0.04); }
+  .qcm-opt.correct { color: var(--white); background: rgba(255,255,255,0.06); }
+  .radio { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--muted2); flex-shrink: 0; }
+  .qcm-opt.correct .radio { border-color: var(--white); background: var(--white); }
+
+  .flash-card {
+    background: #161616; border: 1px solid var(--border-hi);
+    border-radius: 10px; padding: 14px; cursor: pointer;
+  }
+  .flash-front { font-size: 0.82rem; font-weight: 500; }
+  .flash-back { font-size: 0.78rem; color: var(--muted); margin-top: 8px; display: none; }
+  .flash-hint { font-size: 0.7rem; color: var(--muted2); margin-top: 6px; }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 80px 6%;
+    max-width: 900px; margin: 0 auto; text-align: center;
+  }
+  .section-label {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 800; letter-spacing: -1px; margin-bottom: 2.5rem;
+  }
+  .steps {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  }
+  .step {
+    padding: 28px 22px; background: var(--card);
+    border-right: 1px solid var(--border); text-align: left;
+  }
+  .step:last-child { border-right: none; }
+  .step-num { font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 800; color: var(--muted2); margin-bottom: 14px; }
+  .step-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 0.83rem; color: var(--muted); }
+
+  /* PRICING */
+  .pricing-section {
+    padding: 80px 6%;
+    max-width: 700px; margin: 0 auto; text-align: center;
+  }
+  .pricing-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 2.5rem;
+  }
+  .plan {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px; text-align: left; position: relative;
+  }
+  .plan.featured { border-color: var(--border-hi); background: #141414; }
+  .plan-badge {
+    position: absolute; top: -11px; left: 20px;
+    background: var(--white); color: #000;
+    font-size: 0.68rem; font-weight: 700;
+    padding: 3px 12px; border-radius: 100px;
+  }
+  .plan-name { font-size: 0.75rem; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+  .plan-price { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -1px; }
+  .plan-period { font-size: 0.8rem; color: var(--muted); margin-bottom: 20px; }
+  .plan-divider { height: 1px; background: var(--border); margin-bottom: 18px; }
+  .plan-features { list-style: none; margin-bottom: 24px; }
+  .plan-features li { font-size: 0.83rem; color: var(--muted); padding: 5px 0; display: flex; align-items: center; gap: 9px; }
+  .plan-features li::before { content: '✓'; color: var(--white); font-size: 0.75rem; }
+  .plan-btn { width: 100%; padding: 11px; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: opacity .2s; }
+  .plan-btn-outline { background: transparent; border: 1px solid var(--border-hi); color: var(--muted); }
+  .plan-btn-outline:hover { color: var(--white); }
+  .plan-btn-fill { background: var(--white); color: #000; border: none; }
+  .plan-btn-fill:hover { opacity: 0.85; }
+
+  /* CTA */
+  .cta-section { padding: 80px 6%; text-align: center; border-top: 1px solid var(--border); }
+  .cta-section h2 { margin-bottom: 1rem; }
+  .cta-section p { color: var(--muted); margin-bottom: 2rem; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 6%; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; }
+  .footer-copy { font-size: 0.8rem; color: var(--muted2); }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 640px) {
+    .mockup-body, .steps, .pricing-grid { grid-template-columns: 1fr; }
+    .step { border-right: none; border-bottom: 1px solid var(--border); }
+    .step:last-child { border-bottom: none; }
+    footer { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">MEDX</div>
+  <button class="nav-cta">Commencer gratuitement</button>
+</nav>
+
+<section class="hero">
+  <h1>Ton cours devient<br><em>QCM & Flashcards</em><br>en 10 secondes.</h1>
+  <p class="hero-sub">Uploade un PDF ou colle ton texte — MEDX génère automatiquement des QCM et Flashcards ciblés.</p>
+  <div class="hero-actions">
+    <button class="btn-white">Essayer gratuitement</button>
+    <button class="btn-outline">Voir une démo →</button>
+  </div>
+</section>
+
+<div class="mockup-wrap reveal">
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+    </div>
+    <div class="mockup-body">
+      <div>
+        <div class="panel-label">Ton cours</div>
+        <div class="drop-zone">
+          <div class="icon">📄</div>
+          <p>Dépose ton PDF ici</p>
+          <button class="drop-btn">Choisir un fichier</button>
+        </div>
+        <div class="divider-or">— ou —</div>
+        <textarea placeholder="Colle ton cours ici…"></textarea>
+        <button class="gen-btn">✦ Générer maintenant</button>
+      </div>
+      <div class="output-panel">
+        <div class="panel-label">Résultats</div>
+        <div class="qcm-card">
+          <div class="qcm-q">Quelle phase précède la cytocinèse ?</div>
+          <div class="qcm-opt"><div class="radio"></div> A. Prophase</div>
+          <div class="qcm-opt"><div class="radio"></div> B. Métaphase</div>
+          <div class="qcm-opt correct"><div class="radio"></div> C. Télophase ✓</div>
+          <div class="qcm-opt"><div class="radio"></div> D. Anaphase</div>
+        </div>
+        <div class="flash-card">
+          <div class="flash-front">🧬 Rôle des centrosomes ?</div>
+          <div class="flash-back">Organiser le fuseau achromatique qui sépare les chromatides.</div>
+          <div class="flash-hint">Cliquer pour révéler →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="how-section reveal">
+  <div class="section-label">Comment ça marche</div>
+  <h2>3 étapes, c'est tout</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Uploade ou colle</div>
+      <div class="step-desc">PDF ou texte brut — n'importe quelle matière.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">L'IA génère</div>
+      <div class="step-desc">QCM + Flashcards en moins de 15 secondes.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Révise & réussis</div>
+      <div class="step-desc">Entraîne-toi jusqu'à maîtriser le chapitre.</div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section reveal">
+  <div class="section-label">Tarifs</div>
+  <h2>Simple et transparent</h2>
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-name">Gratuit</div>
+      <div class="plan-price">0 DA</div>
+      <div class="plan-period">pour toujours</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>5 générations / mois</li>
+        <li>QCM (10 questions max)</li>
+        <li>Flashcards basiques</li>
+      </ul>
+      <button class="plan-btn plan-btn-outline">Commencer gratuitement</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">POPULAIRE</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">800 DA</div>
+      <div class="plan-period">par mois</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Générations illimitées</li>
+        <li>PDF upload inclus</li>
+        <li>Dr. MEDX AI illimité</li>
+        <li>Suivi de progression</li>
+      </ul>
+      <button class="plan-btn plan-btn-fill">Passer à Pro →</button>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section reveal">
+  <h2>Prêt à mieux étudier ?</h2>
+  <p>Rejoins les étudiants en médecine qui réussissent avec MEDX.</p>
+  <button class="btn-white" style="padding:14px 36px; font-size:1rem;">Commencer gratuitement</button>
+</section>
+
+<footer>
+  <div class="footer-logo">MEDX</div>
+  <div class="footer-copy">© 2025 MEDX</div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+  }), {threshold: 0.1});
+  document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+  document.querySelectorAll('.flash-card').forEach(fc => {
+    fc.addEventListener('click', () => {
+      const b = fc.querySelector('.flash-back'), h = fc.querySelector('.flash-hint');
+      const open = b.style.display === 'block';
+      b.style.display = open ? 'none' : 'block';
+      h.style.display = open ? 'block' : 'none';
+    });
+  });
+
+  document.querySelectorAll('.qcm-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.qcm-opt').forEach(o => o.style.background = '');
+      opt.style.background = 'rgba(255,255,255,0.06)';
+    });
+  });
+</script>
+</body>
+</html>
