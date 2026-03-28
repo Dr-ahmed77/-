@@ -13,11 +13,10 @@
   --bg:#fafafa; --white:#ffffff;
   --border:#e8e8e8; --border2:#d0d0d0;
   --text:#0a0a0a; --muted:#6b6b6b; --muted2:#999;
-  --success:#22c55e; --success-bg:#f0fdf4; --success-light:#dcfce7;
-  --danger:#ef4444; --danger-bg:#fef2f2; --danger-light:#fee2e2;
+  --success:#22c55e; --success-bg:#f0fdf4;
+  --danger:#ef4444; --danger-bg:#fef2f2;
   --accent:#3b82f6; --accent-light:#eff6ff;
   --gradient-x: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --ai-bg:#1a1a2e; --ai-accent:#16213e;
 }
 
 body { 
@@ -28,7 +27,6 @@ body {
   line-height:1.6;
 }
 
-/* NAVBAR */
 nav {
   background:rgba(255,255,255,0.85);
   backdrop-filter:blur(20px);
@@ -83,7 +81,7 @@ nav {
 
 .telegram-icon { width:18px; height:18px; }
 
-.main { max-width:850px; margin:0 auto; padding:32px 24px; padding-bottom:100px; }
+.main { max-width:850px; margin:0 auto; padding:32px 24px; }
 
 .card { 
   background:var(--white); 
@@ -91,11 +89,6 @@ nav {
   border-radius:16px; 
   padding:24px;
   box-shadow:0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.04);
-  transition:box-shadow 0.2s;
-}
-
-.card:hover {
-  box-shadow:0 4px 12px rgba(0,0,0,0.05), 0 16px 48px rgba(0,0,0,0.03);
 }
 
 .clabel { 
@@ -140,7 +133,6 @@ textarea::placeholder { color:var(--muted2); }
   text-align:center; 
   cursor:pointer;
   position:relative; 
-  transition:all 0.2s; 
   min-height:200px;
   display:flex; 
   flex-direction:column; 
@@ -148,6 +140,7 @@ textarea::placeholder { color:var(--muted2); }
   justify-content:center; 
   gap:10px;
   background:#fafafa;
+  transition:all 0.2s;
 }
 
 .drop-zone:hover, .drop-zone.drag { 
@@ -156,7 +149,7 @@ textarea::placeholder { color:var(--muted2); }
 }
 
 .drop-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-.drop-icon { font-size:32px; opacity:0.7; }
+.drop-icon { font-size:32px; }
 .drop-title { font-size:14px; font-weight:600; color:var(--text); }
 .drop-sub { font-size:12px; color:var(--muted); }
 
@@ -187,7 +180,6 @@ select {
   font-family:'DM Sans',sans-serif; 
   outline:none;
   cursor:pointer;
-  transition:all 0.2s;
 }
 
 select:focus {
@@ -208,14 +200,9 @@ select:focus {
   font-family:'DM Sans',sans-serif;
   cursor:pointer; 
   transition:all 0.2s;
-  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);
 }
 
-.btn:hover { 
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px -5px rgba(0,0,0,0.15);
-}
-
+.btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px -5px rgba(0,0,0,0.15); }
 .btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
 .errmsg {
@@ -255,9 +242,8 @@ select:focus {
   cursor:pointer; 
   font-family:'DM Sans',sans-serif; 
   font-weight:500;
-  transition:all 0.2s;
 }
-.btn-back:hover { color:var(--text); border-color:var(--border2); background:#fafafa; }
+.btn-back:hover { color:var(--text); border-color:var(--border2); }
 
 .tabs {
   display:flex; 
@@ -278,13 +264,11 @@ select:focus {
   cursor:pointer; 
   font-family:'DM Sans',sans-serif; 
   color:var(--muted); 
-  transition:all 0.2s;
 }
 .tb.on { 
   background:var(--white); 
   color:var(--text); 
   border:1.5px solid var(--border);
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
 }
 
 .scorebar {
@@ -307,8 +291,8 @@ select:focus {
   border-radius:14px; 
   padding:22px; 
   margin-bottom:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.02);
 }
+
 .qnum { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; font-weight:600; }
 .qtext { font-size:15px; font-weight:600; margin-bottom:16px; line-height:1.6; }
 
@@ -342,7 +326,6 @@ select:focus {
   justify-content:center; 
   font-size:12px; 
   font-weight:700;
-  background:var(--white);
 }
 .opt.good .ol { background:var(--success); border-color:var(--success); color:white; }
 .opt.wrong .ol { background:var(--danger); border-color:var(--danger); color:white; }
@@ -371,11 +354,8 @@ select:focus {
   display:flex; 
   align-items:center; 
   justify-content:center; 
-  transition:all 0.2s;
-  font-weight:600;
 }
-.farr:hover:not(:disabled) { border-color:var(--text); color:var(--text); background:#fafafa; }
-.farr:disabled { opacity:0.3; cursor:not-allowed; }
+.farr:disabled { opacity:0.3; }
 
 .fcard {
   background:var(--white); 
@@ -390,219 +370,16 @@ select:focus {
   align-items:center; 
   justify-content:center;
   position:relative; 
-  transition:all 0.3s;
-  box-shadow:0 4px 12px rgba(0,0,0,0.03);
 }
-.fcard:hover { border-color:var(--border2); box-shadow:0 8px 24px rgba(0,0,0,0.06); }
 .fside { position:absolute; top:16px; left:18px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted2); font-weight:600; }
 .ffront { font-size:17px; font-weight:600; line-height:1.7; }
 .fhint { font-size:12px; color:var(--muted2); margin-top:16px; font-weight:500; }
 .fback { font-size:15px; color:var(--muted); margin-top:20px; line-height:1.8; border-top:2px solid var(--border); padding-top:20px; display:none; font-weight:500; }
 
-/* 🤖 AI CHATBOT STYLES */
-.ai-chat-container {
-  position:fixed;
-  bottom:24px;
-  right:24px;
-  z-index:1000;
-  font-family:'DM Sans',sans-serif;
-}
-
-.ai-toggle {
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  background:var(--gradient-x);
-  border:none;
-  color:white;
-  font-size:28px;
-  cursor:pointer;
-  box-shadow:0 8px 32px rgba(102,126,234,0.4);
-  transition:all 0.3s;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.ai-toggle:hover {
-  transform:scale(1.1) rotate(10deg);
-  box-shadow:0 12px 40px rgba(102,126,234,0.5);
-}
-
-.ai-window {
-  position:absolute;
-  bottom:80px;
-  right:0;
-  width:380px;
-  height:500px;
-  background:var(--ai-bg);
-  border-radius:20px;
-  box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
-  display:none;
-  flex-direction:column;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,0.1);
-}
-
-.ai-window.open { display:flex; animation:slideUp 0.3s ease; }
-
-@keyframes slideUp {
-  from { opacity:0; transform:translateY(20px) scale(0.95); }
-  to { opacity:1; transform:translateY(0) scale(1); }
-}
-
-.ai-header {
-  background:var(--ai-accent);
-  padding:16px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid rgba(255,255,255,0.1);
-}
-
-.ai-title {
-  color:white;
-  font-size:15px;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.ai-status {
-  width:8px;
-  height:8px;
-  background:#22c55e;
-  border-radius:50%;
-  animation:pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,100% { opacity:1; }
-  50% { opacity:0.5; }
-}
-
-.ai-close {
-  background:none;
-  border:none;
-  color:rgba(255,255,255,0.7);
-  font-size:20px;
-  cursor:pointer;
-  transition:color 0.2s;
-}
-.ai-close:hover { color:white; }
-
-.ai-messages {
-  flex:1;
-  overflow-y:auto;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.ai-message {
-  max-width:85%;
-  padding:12px 16px;
-  border-radius:18px;
-  font-size:14px;
-  line-height:1.6;
-  animation:fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(10px); }
-  to { opacity:1; transform:translateY(0); }
-}
-
-.ai-message.user {
-  align-self:flex-end;
-  background:var(--accent);
-  color:white;
-  border-bottom-right-radius:4px;
-}
-
-.ai-message.bot {
-  align-self:flex-start;
-  background:rgba(255,255,255,0.1);
-  color:white;
-  border-bottom-left-radius:4px;
-}
-
-.ai-message.typing {
-  background:rgba(255,255,255,0.05);
-  color:rgba(255,255,255,0.7);
-  font-style:italic;
-}
-
-.ai-input-area {
-  padding:16px 20px;
-  background:var(--ai-accent);
-  border-top:1px solid rgba(255,255,255,0.1);
-  display:flex;
-  gap:10px;
-}
-
-.ai-input {
-  flex:1;
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:12px;
-  padding:12px 16px;
-  color:white;
-  font-family:'DM Sans',sans-serif;
-  font-size:14px;
-  outline:none;
-  transition:all 0.2s;
-}
-
-.ai-input::placeholder { color:rgba(255,255,255,0.5); }
-.ai-input:focus {
-  background:rgba(255,255,255,0.15);
-  border-color:rgba(255,255,255,0.3);
-}
-
-.ai-send {
-  width:44px;
-  height:44px;
-  border-radius:12px;
-  background:var(--accent);
-  border:none;
-  color:white;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all 0.2s;
-}
-
-.ai-send:hover { background:#2563eb; transform:scale(1.05); }
-.ai-send:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
-
-.ai-context {
-  padding:8px 16px;
-  background:rgba(59,130,246,0.2);
-  border-bottom:1px solid rgba(255,255,255,0.1);
-  font-size:12px;
-  color:rgba(255,255,255,0.8);
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.ai-context-icon { font-size:14px; }
-
 @media(max-width:640px){
-  .main { padding:20px 16px; padding-bottom:100px; }
-  nav { padding:0 16px; height:60px; }
   .input-top { grid-template-columns:1fr; }
   .srow { flex-direction:column; }
-  
-  .ai-window {
-    width:calc(100vw - 32px);
-    height:60vh;
-    right:-8px;
-  }
+  .main { padding:20px 16px; }
 }
 </style>
 </head>
@@ -622,7 +399,6 @@ select:focus {
 
 <div class="main">
 
-  <!-- INPUT -->
   <div id="s-input">
     <div class="input-top">
       <div class="card">
@@ -676,13 +452,11 @@ select:focus {
     <button class="btn" id="btngen">Générer QCM + Flashcards</button>
   </div>
 
-  <!-- LOADING -->
   <div id="s-loading">
     <div class="spinner"></div>
     <div class="lmsg" id="lmsg">Lecture du cours…</div>
   </div>
 
-  <!-- RESULTS -->
   <div id="s-results">
     <div class="rh">
       <div class="rtitle" id="rtitle"></div>
@@ -716,38 +490,6 @@ select:focus {
 
 </div>
 
-<!-- 🤖 AI CHATBOT -->
-<div class="ai-chat-container">
-  <div class="ai-window" id="aiWindow">
-    <div class="ai-header">
-      <div class="ai-title">
-        <span>🤖</span>
-        <span>MEDX Assistant</span>
-        <span class="ai-status"></span>
-      </div>
-      <button class="ai-close" onclick="toggleAI()">×</button>
-    </div>
-    <div class="ai-context" id="aiContext">
-      <span class="ai-context-icon">📚</span>
-      <span id="aiContextText">Aucun cours chargé</span>
-    </div>
-    <div class="ai-messages" id="aiMessages">
-      <div class="ai-message bot">
-        👋 Bonjour! Je suis votre assistant MEDX. Chargez un cours et posez-moi vos questions!
-      </div>
-    </div>
-    <div class="ai-input-area">
-      <input type="text" class="ai-input" id="aiInput" placeholder="Posez votre question..." onkeypress="if(event.key==='Enter')sendAIMessage()">
-      <button class="ai-send" id="aiSend" onclick="sendAIMessage()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-  <button class="ai-toggle" id="aiToggle" onclick="toggleAI()">🤖</button>
-</div>
-
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -756,9 +498,7 @@ const LETTERS = ['A','B','C','D'];
 const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des QCM…','Création des Flashcards…'];
 let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
 let pdfText = '';
-let currentContext = '';
 
-// ── PDF UPLOAD ──────────────────────────────────────────
 const dz = G('dropzone');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
@@ -805,12 +545,6 @@ async function readPDF(file) {
     if (pdfText.length < 50) throw new Error("PDF vide ou texte non lisible");
 
     G('txtin').value = pdfText;
-    
-    // ✅ تحديث سياق AI
-    currentContext = pdfText.slice(0, 2000);
-    updateAIContext(file.name);
-    addAIMessage('bot', `✅ J'ai analysé "${file.name}" (${pdf.numPages} pages). Posez-moi vos questions sur ce cours!`);
-
     status.className = 'pdf-status ok';
     status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères`;
   } catch(e) {
@@ -820,97 +554,6 @@ async function readPDF(file) {
   }
 }
 
-// ── AI CHATBOT ──────────────────────────────────────────
-function toggleAI() {
-  const win = G('aiWindow');
-  win.classList.toggle('open');
-}
-
-function updateAIContext(filename) {
-  G('aiContextText').textContent = filename ? `Cours: ${filename.slice(0, 30)}${filename.length>30?'...':''}` : 'Aucun cours chargé';
-}
-
-function addAIMessage(sender, text) {
-  const container = G('aiMessages');
-  const msg = document.createElement('div');
-  msg.className = `ai-message ${sender}`;
-  msg.textContent = text;
-  container.appendChild(msg);
-  container.scrollTop = container.scrollHeight;
-}
-
-function showAITyping() {
-  const container = G('aiMessages');
-  const typing = document.createElement('div');
-  typing.className = 'ai-message bot typing';
-  typing.id = 'aiTyping';
-  typing.textContent = '✍️ En train d\'écrire...';
-  container.appendChild(typing);
-  container.scrollTop = container.scrollHeight;
-}
-
-function hideAITyping() {
-  const typing = G('aiTyping');
-  if (typing) typing.remove();
-}
-
-async function sendAIMessage() {
-  const input = G('aiInput');
-  const sendBtn = G('aiSend');
-  const question = input.value.trim();
-  
-  if (!question) return;
-  
-  // إضافة سؤال المستخدم
-  addAIMessage('user', question);
-  input.value = '';
-  sendBtn.disabled = true;
-  showAITyping();
-
-  try {
-    const context = currentContext || G('txtin').value.slice(0, 2000);
-    
-    const prompt = `Tu es un assistant médical expert. Réponds à cette question basée sur le cours suivant:
-
-COURS:
-"""
-${context}
-"""
-
-QUESTION: ${question}
-
-Instructions:
-- Réponds de façon concise et claire
-- Si la question n'est pas liée au cours, dis-le poliment
-- Utilise des exemples si nécessaire
-- Réponds dans la même langue que la question`;
-
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    hideAITyping();
-    
-    if (!res.ok) throw new Error('Erreur de connexion');
-    
-    const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content || "Désolé, je n'ai pas pu traiter votre demande.";
-    
-    addAIMessage('bot', reply);
-    
-  } catch(e) {
-    hideAITyping();
-    addAIMessage('bot', '❌ Erreur: ' + e.message);
-  } finally {
-    sendBtn.disabled = false;
-  }
-}
-
-// ── GENERATE ────────────────────────────────────────────
 G('btngen').onclick = generate;
 
 async function generate() {
@@ -1074,8 +717,6 @@ G('tfb').onclick = () => {
 G('btnback').onclick = () => {
   G('txtin').value = '';
   pdfText = '';
-  currentContext = '';
-  updateAIContext('');
   G('pdfstatus').style.display = 'none';
   G('errmsg').style.display = 'none';
   show('input');
