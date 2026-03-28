@@ -13,10 +13,11 @@
   --bg:#fafafa; --white:#ffffff;
   --border:#e8e8e8; --border2:#d0d0d0;
   --text:#0a0a0a; --muted:#6b6b6b; --muted2:#999;
-  --success:#22c55e; --success-bg:#f0fdf4; --success-light:#dcfce7;
-  --danger:#ef4444; --danger-bg:#fef2f2; --danger-light:#fee2e2;
+  --success:#22c55e; --success-bg:#f0fdf4;
+  --danger:#ef4444; --danger-bg:#fef2f2;
   --accent:#3b82f6; --accent-light:#eff6ff;
   --gradient-x: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --ai-bg:#1a1a2e; --ai-accent:#16213e;
 }
 
 body { 
@@ -27,11 +28,9 @@ body {
   line-height:1.6;
 }
 
-/* NAVBAR - أنيق وعصري */
 nav {
   background:rgba(255,255,255,0.85);
   backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);
   padding:0 28px; 
   height:64px;
@@ -47,7 +46,6 @@ nav {
   font-family:'Syne',sans-serif; 
   font-weight:800; 
   font-size:22px;
-  letter-spacing:-0.5px;
   display:flex;
   align-items:center;
   gap:2px;
@@ -58,10 +56,8 @@ nav {
   background:var(--gradient-x);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  background-clip:text;
   font-size:26px;
   font-weight:900;
-  transform:translateY(-1px);
 }
 
 .telegram-link {
@@ -84,25 +80,16 @@ nav {
   transform:translateY(-1px);
 }
 
-.telegram-icon {
-  width:18px;
-  height:18px;
-}
+.telegram-icon { width:18px; height:18px; }
 
-.main { max-width:850px; margin:0 auto; padding:32px 24px; }
+.main { max-width:850px; margin:0 auto; padding:32px 24px; padding-bottom:100px; }
 
-/* CARDS - زجاجية أنيقة */
 .card { 
   background:var(--white); 
   border:1px solid var(--border); 
   border-radius:16px; 
   padding:24px;
   box-shadow:0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.04);
-  transition:box-shadow 0.2s;
-}
-
-.card:hover {
-  box-shadow:0 4px 12px rgba(0,0,0,0.05), 0 16px 48px rgba(0,0,0,0.03);
 }
 
 .clabel { 
@@ -116,7 +103,6 @@ nav {
 
 .input-top { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
 
-/* TEXTAREA - حديثة */
 textarea {
   width:100%; 
   min-height:200px; 
@@ -141,7 +127,6 @@ textarea:focus {
 
 textarea::placeholder { color:var(--muted2); }
 
-/* DROPZONE */
 .drop-zone {
   border:2px dashed var(--border2); 
   border-radius:12px;
@@ -149,7 +134,6 @@ textarea::placeholder { color:var(--muted2); }
   text-align:center; 
   cursor:pointer;
   position:relative; 
-  transition:all 0.2s; 
   min-height:200px;
   display:flex; 
   flex-direction:column; 
@@ -157,6 +141,7 @@ textarea::placeholder { color:var(--muted2); }
   justify-content:center; 
   gap:10px;
   background:#fafafa;
+  transition:all 0.2s;
 }
 
 .drop-zone:hover, .drop-zone.drag { 
@@ -165,7 +150,7 @@ textarea::placeholder { color:var(--muted2); }
 }
 
 .drop-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-.drop-icon { font-size:32px; opacity:0.7; }
+.drop-icon { font-size:32px; }
 .drop-title { font-size:14px; font-weight:600; color:var(--text); }
 .drop-sub { font-size:12px; color:var(--muted); }
 
@@ -178,23 +163,10 @@ textarea::placeholder { color:var(--muted2); }
   font-weight:500;
 }
 
-.pdf-status.ok { 
-  background:var(--success-bg); 
-  color:#15803d; 
-  border:1px solid #86efac; 
-}
-.pdf-status.loading { 
-  background:var(--accent-light); 
-  color:var(--accent); 
-  border:1px solid #93c5fd; 
-}
-.pdf-status.err { 
-  background:var(--danger-bg); 
-  color:#991b1b; 
-  border:1px solid #fca5a5; 
-}
+.pdf-status.ok { background:var(--success-bg); color:#15803d; border:1px solid #86efac; }
+.pdf-status.loading { background:var(--accent-light); color:var(--accent); border:1px solid #93c5fd; }
+.pdf-status.err { background:var(--danger-bg); color:#991b1b; border:1px solid #fca5a5; }
 
-/* SETTINGS */
 .srow { display:flex; gap:12px; flex-wrap:wrap; }
 .field { display:flex; flex-direction:column; gap:6px; flex:1; min-width:120px; }
 .field label { font-size:12px; font-weight:500; color:var(--muted); }
@@ -209,7 +181,6 @@ select {
   font-family:'DM Sans',sans-serif; 
   outline:none;
   cursor:pointer;
-  transition:all 0.2s;
 }
 
 select:focus {
@@ -217,7 +188,6 @@ select:focus {
   box-shadow:0 0 0 3px var(--accent-light);
 }
 
-/* BUTTON - أنيق */
 .btn {
   width:100%; 
   margin-top:16px; 
@@ -231,21 +201,10 @@ select:focus {
   font-family:'DM Sans',sans-serif;
   cursor:pointer; 
   transition:all 0.2s;
-  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);
 }
 
-.btn:hover { 
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px -5px rgba(0,0,0,0.15);
-}
-
-.btn:active { transform:translateY(0); }
-
-.btn:disabled { 
-  opacity:0.4; 
-  cursor:not-allowed;
-  transform:none;
-}
+.btn:hover { transform:translateY(-2px); box-shadow:0 10px 20px -5px rgba(0,0,0,0.15); }
+.btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
 .errmsg {
   background:var(--danger-bg); 
@@ -259,7 +218,6 @@ select:focus {
   font-weight:500;
 }
 
-/* LOADING */
 #s-loading { display:none; text-align:center; padding:100px 20px; }
 .spinner {
   width:48px; height:48px; 
@@ -272,14 +230,8 @@ select:focus {
 @keyframes spin { to { transform:rotate(360deg); } }
 .lmsg { font-size:14px; color:var(--muted); font-weight:500; }
 
-/* RESULTS */
 #s-results { display:none; }
-.rh { 
-  display:flex; 
-  align-items:center; 
-  justify-content:space-between; 
-  margin-bottom:20px; 
-}
+.rh { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
 .rtitle { font-size:18px; font-weight:700; }
 .btn-back {
   font-size:13px; 
@@ -291,15 +243,9 @@ select:focus {
   cursor:pointer; 
   font-family:'DM Sans',sans-serif; 
   font-weight:500;
-  transition:all 0.2s;
 }
-.btn-back:hover { 
-  color:var(--text); 
-  border-color:var(--border2);
-  background:#fafafa;
-}
+.btn-back:hover { color:var(--text); border-color:var(--border2); }
 
-/* TABS */
 .tabs {
   display:flex; 
   gap:4px; 
@@ -319,16 +265,13 @@ select:focus {
   cursor:pointer; 
   font-family:'DM Sans',sans-serif; 
   color:var(--muted); 
-  transition:all 0.2s;
 }
 .tb.on { 
   background:var(--white); 
   color:var(--text); 
   border:1.5px solid var(--border);
-  box-shadow:0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* SCORE */
 .scorebar {
   background:var(--success-bg); 
   border:1.5px solid #86efac;
@@ -341,7 +284,6 @@ select:focus {
   display:none;
 }
 
-/* QCM - تصميم جديد */
 .qprog { font-size:12px; color:var(--muted); margin-bottom:14px; font-weight:500; }
 
 .qcard { 
@@ -350,32 +292,11 @@ select:focus {
   border-radius:14px; 
   padding:22px; 
   margin-bottom:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.02);
-  transition:all 0.2s;
 }
 
-.qcard:hover {
-  box-shadow:0 4px 16px rgba(0,0,0,0.04);
-}
+.qnum { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; font-weight:600; }
+.qtext { font-size:15px; font-weight:600; margin-bottom:16px; line-height:1.6; }
 
-.qnum { 
-  font-size:11px; 
-  color:var(--muted); 
-  text-transform:uppercase; 
-  letter-spacing:1px; 
-  margin-bottom:8px;
-  font-weight:600;
-}
-
-.qtext { 
-  font-size:15px; 
-  font-weight:600; 
-  margin-bottom:16px; 
-  line-height:1.6;
-  color:var(--text);
-}
-
-/* OPTIONS - ألوان واضحة */
 .opt {
   display:flex; 
   align-items:flex-start; 
@@ -387,29 +308,13 @@ select:focus {
   cursor:pointer; 
   font-size:14px;
   transition:all 0.15s; 
-  color:var(--text); 
   background:var(--white);
   font-weight:500;
 }
 
-.opt:hover:not(.lk) { 
-  border-color:var(--border2);
-  background:#fafafa;
-}
-
-/* ✅ إجابة صحيحة - أخضر */
-.opt.good { 
-  background:var(--success-bg) !important; 
-  border-color:var(--success) !important; 
-  color:#15803d !important;
-}
-
-/* ❌ إجابة خاطئة - أحمر */
-.opt.wrong { 
-  background:var(--danger-bg) !important; 
-  border-color:var(--danger) !important; 
-  color:#991b1b !important;
-}
+.opt:hover:not(.lk) { border-color:var(--border2); background:#fafafa; }
+.opt.good { background:var(--success-bg) !important; border-color:var(--success) !important; color:#15803d !important; }
+.opt.wrong { background:var(--danger-bg) !important; border-color:var(--danger) !important; color:#991b1b !important; }
 
 .ol { 
   width:28px; 
@@ -422,20 +327,9 @@ select:focus {
   justify-content:center; 
   font-size:12px; 
   font-weight:700;
-  background:var(--white);
 }
-
-.opt.good .ol {
-  background:var(--success);
-  border-color:var(--success);
-  color:white;
-}
-
-.opt.wrong .ol {
-  background:var(--danger);
-  border-color:var(--danger);
-  color:white;
-}
+.opt.good .ol { background:var(--success); border-color:var(--success); color:white; }
+.opt.wrong .ol { background:var(--danger); border-color:var(--danger); color:white; }
 
 .expl { 
   font-size:13px; 
@@ -447,7 +341,6 @@ select:focus {
   display:none;
 }
 
-/* FLASHCARDS */
 .fnav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .fcnt { font-size:14px; color:var(--muted); font-weight:500; }
 .farr { 
@@ -462,15 +355,8 @@ select:focus {
   display:flex; 
   align-items:center; 
   justify-content:center; 
-  transition:all 0.2s;
-  font-weight:600;
 }
-.farr:hover:not(:disabled) { 
-  border-color:var(--text); 
-  color:var(--text);
-  background:#fafafa;
-}
-.farr:disabled { opacity:0.3; cursor:not-allowed; }
+.farr:disabled { opacity:0.3; }
 
 .fcard {
   background:var(--white); 
@@ -485,59 +371,215 @@ select:focus {
   align-items:center; 
   justify-content:center;
   position:relative; 
+}
+.fside { position:absolute; top:16px; left:18px; font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted2); font-weight:600; }
+.ffront { font-size:17px; font-weight:600; line-height:1.7; }
+.fhint { font-size:12px; color:var(--muted2); margin-top:16px; font-weight:500; }
+.fback { font-size:15px; color:var(--muted); margin-top:20px; line-height:1.8; border-top:2px solid var(--border); padding-top:20px; display:none; font-weight:500; }
+
+/* 🤖 AI CHATBOT STYLES */
+.ai-chat-container {
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  z-index:1000;
+  font-family:'DM Sans',sans-serif;
+}
+
+.ai-toggle {
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:var(--gradient-x);
+  border:none;
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+  box-shadow:0 8px 32px rgba(102,126,234,0.4);
   transition:all 0.3s;
-  box-shadow:0 4px 12px rgba(0,0,0,0.03);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.fcard:hover { 
-  border-color:var(--border2);
-  box-shadow:0 8px 24px rgba(0,0,0,0.06);
+.ai-toggle:hover {
+  transform:scale(1.1);
+  box-shadow:0 12px 40px rgba(102,126,234,0.5);
 }
 
-.fside { 
-  position:absolute; 
-  top:16px; 
-  left:18px; 
-  font-size:11px; 
-  letter-spacing:1.5px; 
-  text-transform:uppercase; 
-  color:var(--muted2);
-  font-weight:600;
-}
-
-.ffront { 
-  font-size:17px; 
-  font-weight:600; 
-  line-height:1.7;
-  color:var(--text);
-}
-
-.fhint { 
-  font-size:12px; 
-  color:var(--muted2); 
-  margin-top:16px;
-  font-weight:500;
-}
-
-.fback { 
-  font-size:15px; 
-  color:var(--muted); 
-  margin-top:20px; 
-  line-height:1.8; 
-  border-top:2px solid var(--border); 
-  padding-top:20px; 
+.ai-window {
+  position:absolute;
+  bottom:80px;
+  right:0;
+  width:380px;
+  height:500px;
+  background:var(--ai-bg);
+  border-radius:20px;
+  box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
   display:none;
-  font-weight:500;
+  flex-direction:column;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.1);
 }
+
+.ai-window.open { display:flex; animation:slideUp 0.3s ease; }
+
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(20px) scale(0.95); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.ai-header {
+  background:var(--ai-accent);
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.ai-title {
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.ai-status {
+  width:8px;
+  height:8px;
+  background:#22c55e;
+  border-radius:50%;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:0.5; }
+}
+
+.ai-close {
+  background:none;
+  border:none;
+  color:rgba(255,255,255,0.7);
+  font-size:24px;
+  cursor:pointer;
+  transition:color 0.2s;
+}
+.ai-close:hover { color:white; }
+
+.ai-messages {
+  flex:1;
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.ai-message {
+  max-width:85%;
+  padding:12px 16px;
+  border-radius:18px;
+  font-size:14px;
+  line-height:1.6;
+  animation:fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.ai-message.user {
+  align-self:flex-end;
+  background:var(--accent);
+  color:white;
+  border-bottom-right-radius:4px;
+}
+
+.ai-message.bot {
+  align-self:flex-start;
+  background:rgba(255,255,255,0.1);
+  color:white;
+  border-bottom-left-radius:4px;
+}
+
+.ai-message.typing {
+  background:rgba(255,255,255,0.05);
+  color:rgba(255,255,255,0.7);
+  font-style:italic;
+}
+
+.ai-input-area {
+  padding:16px 20px;
+  background:var(--ai-accent);
+  border-top:1px solid rgba(255,255,255,0.1);
+  display:flex;
+  gap:10px;
+}
+
+.ai-input {
+  flex:1;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:12px;
+  padding:12px 16px;
+  color:white;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;
+  outline:none;
+  transition:all 0.2s;
+}
+
+.ai-input::placeholder { color:rgba(255,255,255,0.5); }
+.ai-input:focus {
+  background:rgba(255,255,255,0.15);
+  border-color:rgba(255,255,255,0.3);
+}
+
+.ai-send {
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:var(--accent);
+  border:none;
+  color:white;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.2s;
+}
+
+.ai-send:hover { background:#2563eb; transform:scale(1.05); }
+.ai-send:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+.ai-context {
+  padding:10px 16px;
+  background:rgba(59,130,246,0.2);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  font-size:12px;
+  color:rgba(255,255,255,0.9);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.ai-context-icon { font-size:14px; }
 
 @media(max-width:640px){
   .input-top { grid-template-columns:1fr; }
   .srow { flex-direction:column; }
-  .main { padding:20px 16px; }
-  nav { padding:0 16px; height:60px; }
-  .logo { font-size:20px; }
-  .telegram-link { padding:6px 12px; font-size:12px; }
-  .telegram-icon { width:16px; height:16px; }
+  .main { padding:20px 16px; padding-bottom:100px; }
+  
+  .ai-window {
+    width:calc(100vw - 32px);
+    height:60vh;
+    right:-8px;
+  }
 }
 </style>
 </head>
@@ -557,17 +599,12 @@ select:focus {
 
 <div class="main">
 
-  <!-- INPUT -->
   <div id="s-input">
     <div class="input-top">
-
-      <!-- Texte -->
       <div class="card">
         <div class="clabel">Coller le texte</div>
-        <textarea id="txtin" placeholder="اكتب هنا النص لي راك باغي تخدملو qcm او flashcards…&#10;&#10;Exemple: Génétique du cancer, Anatomie, Physiologie..."></textarea>
+        <textarea id="txtin" placeholder="اكتب هنا النص لي راك باغي تخدملو qcm او flashcards…"></textarea>
       </div>
-
-      <!-- PDF Upload -->
       <div class="card">
         <div class="clabel">Uploader un PDF</div>
         <div class="drop-zone" id="dropzone">
@@ -578,10 +615,8 @@ select:focus {
         </div>
         <div class="pdf-status" id="pdfstatus"></div>
       </div>
-
     </div>
 
-    <!-- Settings -->
     <div class="card">
       <div class="srow">
         <div class="field">
@@ -617,13 +652,11 @@ select:focus {
     <button class="btn" id="btngen">Générer QCM + Flashcards</button>
   </div>
 
-  <!-- LOADING -->
   <div id="s-loading">
     <div class="spinner"></div>
     <div class="lmsg" id="lmsg">Lecture du cours…</div>
   </div>
 
-  <!-- RESULTS -->
   <div id="s-results">
     <div class="rh">
       <div class="rtitle" id="rtitle"></div>
@@ -657,6 +690,38 @@ select:focus {
 
 </div>
 
+<!-- 🤖 AI CHATBOT -->
+<div class="ai-chat-container">
+  <div class="ai-window" id="aiWindow">
+    <div class="ai-header">
+      <div class="ai-title">
+        <span>🤖</span>
+        <span>MEDX Assistant</span>
+        <span class="ai-status"></span>
+      </div>
+      <button class="ai-close" onclick="toggleAI()">×</button>
+    </div>
+    <div class="ai-context" id="aiContext">
+      <span class="ai-context-icon">📚</span>
+      <span id="aiContextText">Aucun cours chargé</span>
+    </div>
+    <div class="ai-messages" id="aiMessages">
+      <div class="ai-message bot">
+        👋 Salam! Je suis ton assistant MEDX. Charge un cours et pose-moi tes questions!
+      </div>
+    </div>
+    <div class="ai-input-area">
+      <input type="text" class="ai-input" id="aiInput" placeholder="Écris ta question..." onkeypress="if(event.key==='Enter')sendAIMessage()">
+      <button class="ai-send" id="aiSend" onclick="sendAIMessage()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <button class="ai-toggle" id="aiToggle" onclick="toggleAI()">🤖</button>
+</div>
+
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -665,10 +730,10 @@ const LETTERS = ['A','B','C','D'];
 const MSGS = ['Lecture du cours…','Analyse des concepts…','Génération des QCM…','Création des Flashcards…'];
 let qcm=[], flash=[], fi=0, fo=false, answered=0, correct=0;
 let pdfText = '';
+let currentContext = '';
 
 // ── PDF UPLOAD ──────────────────────────────────────────
 const dz = G('dropzone');
-
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
 dz.addEventListener('drop', e => {
@@ -676,7 +741,6 @@ dz.addEventListener('drop', e => {
   const f = e.dataTransfer.files[0];
   if (f && f.type === 'application/pdf') readPDF(f);
 });
-
 G('pdffile').addEventListener('change', e => {
   const f = e.target.files[0];
   if (f) readPDF(f);
@@ -687,60 +751,134 @@ async function readPDF(file) {
   status.className = 'pdf-status loading';
   status.textContent = '⏳ Lecture du PDF…';
   status.style.display = 'block';
-
   pdfText = '';
 
   try {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
     let fullText = "";
 
     for (let i = 1; i <= pdf.numPages; i++) {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
-      
-      // تجميع النص مع مراعاة الترتيب
       let lastY = 0;
       let pageText = "";
       
       for (let j = 0; j < textContent.items.length; j++) {
         const item = textContent.items[j];
         const y = item.transform[5];
-        
-        if (j > 0 && Math.abs(y - lastY) > 5) {
-          pageText += "\n";
-        }
-        
+        if (j > 0 && Math.abs(y - lastY) > 5) pageText += "\n";
         pageText += item.str;
         lastY = y;
       }
-      
       fullText += pageText + "\n\n";
       status.textContent = `⏳ Lecture… Page ${i}/${pdf.numPages}`;
     }
 
-    // تنظيف النص
-    pdfText = fullText
-      .replace(/\s+/g, ' ')
-      .replace(/\n\s*\n/g, '\n\n')
-      .trim();
+    pdfText = fullText.replace(/\s+/g, ' ').replace(/\n\s*\n/g, '\n\n').trim();
+    if (pdfText.length < 50) throw new Error("PDF vide ou texte non lisible");
 
-    if (pdfText.length < 50) {
-      throw new Error("PDF vide ou texte non lisible");
-    }
-
-    // ✅ عرض النص الكامل (بدون تقطيع!)
     G('txtin').value = pdfText;
+    
+    // ✅ تحديث سياق AI
+    currentContext = pdfText.slice(0, 3000);
+    updateAIContext(file.name);
+    addAIMessage('bot', `✅ J'ai analysé "${file.name}" (${pdf.numPages} pages). Pose-moi tes questions!`);
 
     status.className = 'pdf-status ok';
-    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères extraits`;
-
+    status.textContent = `✓ ${file.name} — ${pdf.numPages} pages, ${pdfText.length} caractères`;
   } catch(e) {
-    console.error("PDF Error:", e);
     status.className = 'pdf-status err';
     status.textContent = '✗ ' + e.message;
     pdfText = '';
+  }
+}
+
+// ── AI CHATBOT ──────────────────────────────────────────
+function toggleAI() {
+  const win = G('aiWindow');
+  win.classList.toggle('open');
+}
+
+function updateAIContext(filename) {
+  G('aiContextText').textContent = filename ? `Cours: ${filename.slice(0, 25)}${filename.length>25?'...':''}` : 'Aucun cours chargé';
+}
+
+function addAIMessage(sender, text) {
+  const container = G('aiMessages');
+  const msg = document.createElement('div');
+  msg.className = `ai-message ${sender}`;
+  msg.textContent = text;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+}
+
+function showAITyping() {
+  const container = G('aiMessages');
+  const typing = document.createElement('div');
+  typing.className = 'ai-message bot typing';
+  typing.id = 'aiTyping';
+  typing.textContent = '✍️ Je réfléchis...';
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideAITyping() {
+  const typing = G('aiTyping');
+  if (typing) typing.remove();
+}
+
+async function sendAIMessage() {
+  const input = G('aiInput');
+  const sendBtn = G('aiSend');
+  const question = input.value.trim();
+  
+  if (!question) return;
+  
+  addAIMessage('user', question);
+  input.value = '';
+  sendBtn.disabled = true;
+  showAITyping();
+
+  try {
+    const context = currentContext || G('txtin').value.slice(0, 3000);
+    
+    const prompt = `Tu es un assistant médical expert. Réponds à cette question basée sur le cours suivant:
+
+COURS:
+"""
+${context}
+"""
+
+QUESTION: ${question}
+
+Instructions:
+- Réponds de façon concise et claire (max 3-4 phrases)
+- Si la question n'est pas liée au cours, dis-le poliment
+- Utilise la même langue que la question`;
+
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    hideAITyping();
+    
+    if (!res.ok) throw new Error('Erreur de connexion');
+    
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || "Désolé, je n'ai pas pu traiter votre demande.";
+    
+    addAIMessage('bot', reply);
+    
+  } catch(e) {
+    hideAITyping();
+    addAIMessage('bot', '❌ Erreur: ' + e.message);
+  } finally {
+    sendBtn.disabled = false;
   }
 }
 
@@ -783,24 +921,16 @@ INSTRUCTIONS:
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: [{ role: 'user', content: prompt }]
-      })
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
     });
 
     clearInterval(timer);
-    
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     
     const data = await res.json();
     if (data.error) throw new Error(data.error);
 
     const raw = data.choices?.[0]?.message?.content || '';
-    
-    // استخراج JSON
     let jsonStr = raw;
     const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
     if (codeBlockMatch) jsonStr = codeBlockMatch[1];
@@ -823,7 +953,6 @@ INSTRUCTIONS:
     show('input');
     err.textContent = 'Erreur : ' + e.message;
     err.style.display = 'block';
-    console.error("Generate error:", e);
   }
 }
 
@@ -858,11 +987,7 @@ function render() {
 
 function escapeHtml(text) {
   if (!text) return '';
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function pick(o) {
@@ -870,13 +995,8 @@ function pick(o) {
   const opts = G('qcont').querySelectorAll(`[data-qi="${qi}"]`);
   if (opts[0].classList.contains('lk')) return;
   
-  if (oi === qcm[qi].correct) { 
-    o.classList.add('good'); 
-    correct++; 
-  } else { 
-    o.classList.add('wrong'); 
-    opts[qcm[qi].correct].classList.add('good'); 
-  }
+  if (oi === qcm[qi].correct) { o.classList.add('good'); correct++; }
+  else { o.classList.add('wrong'); opts[qcm[qi].correct].classList.add('good'); }
   
   opts.forEach(x => x.classList.add('lk'));
   G('ex'+qi).style.display = 'block';
@@ -919,15 +1039,15 @@ G('tqb').onclick = () => {
   G('t-qcm').style.display='block'; G('t-flash').style.display='none';
   G('tqb').classList.add('on'); G('tfb').classList.remove('on');
 };
-
 G('tfb').onclick = () => {
   G('t-flash').style.display='block'; G('t-qcm').style.display='none';
   G('tfb').classList.add('on'); G('tqb').classList.remove('on');
 };
-
 G('btnback').onclick = () => {
   G('txtin').value = '';
   pdfText = '';
+  currentContext = '';
+  updateAIContext('');
   G('pdfstatus').style.display = 'none';
   G('errmsg').style.display = 'none';
   show('input');
