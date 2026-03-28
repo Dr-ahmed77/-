@@ -1,4 +1,3 @@
-// api/chat.js - نسخة Groq
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -8,22 +7,28 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Méthode non autorisée' });
 
   try {
-    const GROQ_KEY = process.env.GROQ_API_KEY; // ← مفتاح مختلف
+    const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
     
-    if (!GROQ_KEY) {
-      return res.status(500).json({ error: "Clé GROQ_API_KEY manquante" });
+    if (!OPENROUTER_KEY) {
+      return res.status(500).json({ error: "Clé API manquante" });
     }
 
-    const { messages } = req.body;
+    const { messages } = req.body || {};
+    
+    if (!messages || !messages.length) {
+      return res.status(400).json({ error: "Messages manquants" });
+    }
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${GROQ_KEY}`,
-        "Content-Type": "application/json"
+        "Authorization": `Bearer ${OPENROUTER_KEY}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://medx.vercel.app",
+        "X-Title": "MEDX"
       },
       body: JSON.stringify({
-        model: "llama-3.1-8b-instant",
+        model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: messages,
         temperature: 0.7,
         max_tokens: 4000
