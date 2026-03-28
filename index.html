@@ -398,10 +398,15 @@ Réponds UNIQUEMENT avec du JSON valide, sans texte avant ou après, sans markdo
 Règles: correct = index 0-3. Distracteurs réalistes. Flashcards concises.`;
 
   try {
-    const res = await fetch('/api/chat', {
+    // في ملف HTML الخاص بك، تأكد أن fetch يبدو هكذا:
+const response = await fetch('/api/chat', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+  headers: { 
+    'Content-Type': 'application/json'  // ← مهم جداً!
+  },
+  body: JSON.stringify({ 
+    messages: [{ role: 'user', content: prompt }]  // ← تأكد من البنية
+  })
 });
 
     clearInterval(timer);
