@@ -831,7 +831,6 @@ async function generate() {
       if (data.error) throw new Error(data.error);
 
       const raw = data.choices?.[0]?.message?.content || '';
-      alert('RAW: ' + raw.slice(0, 300));
       console.log('Raw response length:', raw.length);
 
       const parsed = extractJSON(raw);
