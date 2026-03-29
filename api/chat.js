@@ -1,3 +1,7 @@
+export const config = {
+  api: { bodyParser: true }
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -12,7 +16,13 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Clé API non configurée" });
     }
 
-    const { messages } = req.body || {};
+    // ✅ parse body إذا جا كـ string
+    let body = req.body;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch(e) {}
+    }
+
+    const { messages } = body || {};
     if (!messages || !messages.length) {
       return res.status(400).json({ error: "Messages manquants" });
     }
@@ -36,29 +46,12 @@ export default async function handler(req, res) {
           }
         ],
         temperature: 0.3,
-        max_tokens: 3000,
-        body: JSON.stringify({
-  model: "llama-3.3-70b-versatile",
-  messages: [
-    {
-      role: "system",
-      content: "Tu es un générateur de QCM et flashcards médicaux. Tu réponds UNIQUEMENT avec du JSON valide, sans aucun texte avant ou après. Jamais de markdown, jamais d'explication, seulement le JSON brut."
-    },
-    {
-      role: "user",
-      content: messages[0].content
-    }
-  ],
-  temperature: 0.3,
-  max_tokens: 3000
-  // ✅ حذفنا response_format
-})
+        max_tokens: 3000
       })
     });
 
     console.log("Groq status:", response.status);
     const data = await response.json();
-    console.log("Groq response keys:", Object.keys(data));
 
     if (!response.ok) {
       throw new Error(`Groq error ${response.status}: ${data.error?.message || JSON.stringify(data)}`);
