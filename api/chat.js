@@ -25,22 +25,27 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
-        messages: [{ role: "user", content: messages[0].content }],
-        temperature: 0.7,
-        max_tokens: 4000
+        messages: [
+          {
+            role: "system",
+            content: "Tu es un générateur de QCM et flashcards médicaux. Tu réponds UNIQUEMENT avec du JSON valide, sans aucun texte avant ou après. Jamais de markdown, jamais d'explication, seulement le JSON brut."
+          },
+          {
+            role: "user",
+            content: messages[0].content
+          }
+        ],
+        temperature: 0.3,
+        max_tokens: 3000,
+        response_format: { type: "json_object" }
       })
     });
 
-    // ✅ DEBUG: لوغ الـ status تاع Groq
     console.log("Groq status:", response.status);
-
     const data = await response.json();
-
-    // ✅ DEBUG: لوغ الـ response كاملة
-    console.log("Groq response:", JSON.stringify(data));
+    console.log("Groq response keys:", Object.keys(data));
 
     if (!response.ok) {
-      // ✅ ارجع الـ error الحقيقي من Groq
       throw new Error(`Groq error ${response.status}: ${data.error?.message || JSON.stringify(data)}`);
     }
 
