@@ -37,7 +37,22 @@ export default async function handler(req, res) {
         ],
         temperature: 0.3,
         max_tokens: 3000,
-        response_format: { type: "json_object" }
+        body: JSON.stringify({
+  model: "llama-3.3-70b-versatile",
+  messages: [
+    {
+      role: "system",
+      content: "Tu es un générateur de QCM et flashcards médicaux. Tu réponds UNIQUEMENT avec du JSON valide, sans aucun texte avant ou après. Jamais de markdown, jamais d'explication, seulement le JSON brut."
+    },
+    {
+      role: "user",
+      content: messages[0].content
+    }
+  ],
+  temperature: 0.3,
+  max_tokens: 3000
+  // ✅ حذفنا response_format
+})
       })
     });
 
