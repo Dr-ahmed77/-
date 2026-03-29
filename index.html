@@ -27,7 +27,6 @@ body {
   line-height:1.6;
 }
 
-/* NAVBAR - أنيق وعصري */
 nav {
   background:rgba(255,255,255,0.85);
   backdrop-filter:blur(20px);
@@ -91,7 +90,6 @@ nav {
 
 .main { max-width:850px; margin:0 auto; padding:32px 24px; }
 
-/* CARDS - زجاجية أنيقة */
 .card { 
   background:var(--white); 
   border:1px solid var(--border); 
@@ -116,7 +114,6 @@ nav {
 
 .input-top { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
 
-/* TEXTAREA - حديثة */
 textarea {
   width:100%; 
   min-height:200px; 
@@ -141,7 +138,6 @@ textarea:focus {
 
 textarea::placeholder { color:var(--muted2); }
 
-/* DROPZONE */
 .drop-zone {
   border:2px dashed var(--border2); 
   border-radius:12px;
@@ -194,7 +190,6 @@ textarea::placeholder { color:var(--muted2); }
   border:1px solid #fca5a5; 
 }
 
-/* SETTINGS */
 .srow { display:flex; gap:12px; flex-wrap:wrap; }
 .field { display:flex; flex-direction:column; gap:6px; flex:1; min-width:120px; }
 .field label { font-size:12px; font-weight:500; color:var(--muted); }
@@ -217,7 +212,6 @@ select:focus {
   box-shadow:0 0 0 3px var(--accent-light);
 }
 
-/* BUTTON - أنيق */
 .btn {
   width:100%; 
   margin-top:16px; 
@@ -259,7 +253,6 @@ select:focus {
   font-weight:500;
 }
 
-/* LOADING */
 #s-loading { display:none; text-align:center; padding:100px 20px; }
 .spinner {
   width:48px; height:48px; 
@@ -272,7 +265,6 @@ select:focus {
 @keyframes spin { to { transform:rotate(360deg); } }
 .lmsg { font-size:14px; color:var(--muted); font-weight:500; }
 
-/* RESULTS */
 #s-results { display:none; }
 .rh { 
   display:flex; 
@@ -299,7 +291,6 @@ select:focus {
   background:#fafafa;
 }
 
-/* TABS */
 .tabs {
   display:flex; 
   gap:4px; 
@@ -328,7 +319,6 @@ select:focus {
   box-shadow:0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* SCORE */
 .scorebar {
   background:var(--success-bg); 
   border:1.5px solid #86efac;
@@ -341,7 +331,6 @@ select:focus {
   display:none;
 }
 
-/* QCM - تصميم جديد */
 .qprog { font-size:12px; color:var(--muted); margin-bottom:14px; font-weight:500; }
 
 .qcard { 
@@ -375,7 +364,6 @@ select:focus {
   color:var(--text);
 }
 
-/* OPTIONS - ألوان واضحة */
 .opt {
   display:flex; 
   align-items:flex-start; 
@@ -397,14 +385,12 @@ select:focus {
   background:#fafafa;
 }
 
-/* ✅ إجابة صحيحة - أخضر */
 .opt.good { 
   background:var(--success-bg) !important; 
   border-color:var(--success) !important; 
   color:#15803d !important;
 }
 
-/* ❌ إجابة خاطئة - أحمر */
 .opt.wrong { 
   background:var(--danger-bg) !important; 
   border-color:var(--danger) !important; 
@@ -447,7 +433,6 @@ select:focus {
   display:none;
 }
 
-/* FLASHCARDS */
 .fnav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
 .fcnt { font-size:14px; color:var(--muted); font-weight:500; }
 .farr { 
@@ -744,6 +729,64 @@ async function readPDF(file) {
 // ── GENERATE ────────────────────────────────────────────
 G('btngen').onclick = generate;
 
+// ✅ دالة لبناء الـ prompt — maxChars قابل للتغيير
+function buildPrompt(txt, nbq, nbf, lng, maxChars) {
+  return `Tu es un expert en pédagogie médicale. Génère exactement ${nbq} QCM et ${nbf} flashcards en ${lng} à partir de ce cours médical.
+
+COURS:
+"""
+${txt.slice(0, maxChars)}
+"""
+
+INSTRUCTIONS:
+- QCM: questions réalistes avec 4 options (A,B,C,D), une seule bonne réponse
+- Flashcards: format question/réponse concis
+- Langue: ${lng}
+- Réponds UNIQUEMENT en JSON valide, sans texte avant ou après:
+
+{"qcm":[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."}],"flashcards":[{"front":"...","back":"..."}]}`;
+}
+
+// ✅ دالة لعمل الـ fetch مع timeout
+async function fetchWithTimeout(prompt, timeoutMs) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] }),
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return res;
+  } catch(e) {
+    clearTimeout(timeoutId);
+    throw e;
+  }
+}
+
+// ✅ دالة لاستخراج JSON من الـ response
+function extractJSON(raw) {
+  if (!raw) return null;
+  
+  // محاولة 1: code block
+  const codeMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (codeMatch) {
+    try { return JSON.parse(codeMatch[1]); } catch(e) {}
+  }
+  
+  // محاولة 2: أول { لآخر }
+  const start = raw.indexOf('{');
+  const end = raw.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    try { return JSON.parse(raw.slice(start, end + 1)); } catch(e) {}
+  }
+
+  return null;
+}
+
 async function generate() {
   const txt = G('txtin').value.trim();
   const err = G('errmsg');
@@ -756,112 +799,80 @@ async function generate() {
   }
 
   const nbq = G('nbq').value, nbf = G('nbf').value, lng = G('lng').value;
-  
-  // ✅ نكتشف الهاتف ونقلل النص
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const maxChars = isMobile ? 2000 : 4000;
-  
   show('loading');
 
   let mi = 0;
   const timer = setInterval(() => { G('lmsg').textContent = MSGS[++mi % MSGS.length]; }, 1600);
 
-  const prompt = `Tu es un expert en pédagogie médicale. Génère exactement ${nbq} QCM et ${nbf} flashcards en ${lng} à partir de ce cours médical.
+  // ✅ استراتيجية retry: tentative 1 = 3000 chars، tentative 2 = 1500 chars
+  const attempts = [
+    { maxChars: 3000, timeout: 30000, label: 'Tentative 1' },
+    { maxChars: 1500, timeout: 25000, label: 'Tentative 2 (texte réduit)' }
+  ];
 
-COURS:
-"""
-${txt.slice(0, maxChars)}
-"""
+  let lastError = null;
 
-INSTRUCTIONS:
-- QCM: questions réalistes avec 4 options (A,B,C,D), une seule bonne réponse
-- Flashcards: format question/réponse concis
-- Langue: ${lng}
-- Réponds UNIQUEMENT en JSON valide, sans texte avant ou après
-
-Format exact:
-{"qcm":[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"..."}],"flashcards":[{"front":"...","back":"..."}]}`;
-
-  // ✅ محاولتين للهاتف
-  const MAX_RETRIES = isMobile ? 2 : 1;
-  
-  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+  for (const attempt of attempts) {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), isMobile ? 15000 : 30000);
+      console.log(`${attempt.label}: maxChars=${attempt.maxChars}`);
+      G('lmsg').textContent = attempt.label === 'Tentative 2 (texte réduit)' 
+        ? 'Nouvelle tentative…' 
+        : MSGS[0];
 
-      const res = await fetch('/api/chat?_=' + Date.now(), {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
-        },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }]
-        }),
-        signal: controller.signal
-      });
+      const prompt = buildPrompt(txt, nbq, nbf, lng, attempt.maxChars);
+      const res = await fetchWithTimeout(prompt, attempt.timeout);
 
-      clearTimeout(timeoutId);
-      clearInterval(timer);
-      
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || `HTTP ${res.status}`);
       }
-      
+
       const data = await res.json();
       if (data.error) throw new Error(data.error);
 
       const raw = data.choices?.[0]?.message?.content || '';
-      
-      // ✅ PARSING محسّن
-      let jsonStr = raw;
-      
-      // نشيل ```json ```
-      const codeBlockMatch = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-      if (codeBlockMatch) jsonStr = codeBlockMatch[1];
-      
-      // نلقى أول { وآخر }
-      const firstBrace = jsonStr.indexOf('{');
-      const lastBrace = jsonStr.lastIndexOf('}');
-      
-      if (firstBrace === -1 || lastBrace === -1 || lastBrace < firstBrace) {
+      console.log('Raw response length:', raw.length);
+
+      const parsed = extractJSON(raw);
+
+      if (!parsed) {
+        console.warn('JSON parse failed, raw:', raw.slice(0, 200));
         throw new Error('Réponse invalide du modèle');
       }
-      
-      jsonStr = jsonStr.slice(firstBrace, lastBrace + 1).trim();
-      
-      // ننظف
-      jsonStr = jsonStr
-        .replace(/[\u0000-\u001F]/g, '')
-        .replace(/\n/g, ' ');
-      
-      const parsed = JSON.parse(jsonStr);
+
       qcm = parsed.qcm || [];
       flash = parsed.flashcards || [];
-      
+
       if (!qcm.length && !flash.length) throw new Error('Aucun contenu généré');
 
+      // ✅ نجح!
+      clearInterval(timer);
       answered = 0; correct = 0; fi = 0; fo = false;
       render();
       show('results');
-      return; // ✅ نجح
-      
+      return; // خرج من الحلقة
+
     } catch(e) {
-      clearInterval(timer);
-      console.error('Tentative', attempt + 1, 'échouée:', e);
-      
-      if (attempt < MAX_RETRIES - 1) {
-        await new Promise(r => setTimeout(r, 1000)); // نستنى ثانية
-      } else {
-        // فشلت كل المحاولات
-        show('input');
-        err.textContent = 'Erreur : ' + e.message;
-        err.style.display = 'block';
+      console.error(`${attempt.label} échouée:`, e);
+      lastError = e;
+      // إذا كانت AbortError (timeout) أو parse error، جرب المرة الجاية
+      // إذا كانت HTTP error حقيقية، وقف
+      if (e.name !== 'AbortError' && !e.message.includes('invalide') && !e.message.includes('Aucun')) {
+        break;
       }
     }
   }
+
+  // كل المحاولات فشلت
+  clearInterval(timer);
+  show('input');
+  
+  let msg = 'Erreur : ' + (lastError?.message || 'Inconnue');
+  if (lastError?.name === 'AbortError') {
+    msg = 'Timeout : la requête a pris trop de temps. Essaie avec un texte plus court.';
+  }
+  err.textContent = msg;
+  err.style.display = 'block';
 }
 
 function show(s) {
