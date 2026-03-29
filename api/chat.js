@@ -47,6 +47,7 @@ export default async function handler(req, res) {
     if (data.error) throw new Error(data.error.message);
 
     const reply = data.choices?.[0]?.message?.content || "";
+    alert('RAW: ' + raw.slice(0, 300));
     res.status(200).json({ choices: [{ message: { content: reply } }] });
 
   } catch (e) {
