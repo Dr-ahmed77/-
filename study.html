@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethereal Sanctuary - Study Mode</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#8bd6b4",
+            "primary-container": "#00513a",
+            "on-primary": "#004a34",
+            "secondary": "#8a95ff",
+            "secondary-container": "#222d97",
+            "on-secondary": "#000974",
+            "tertiary": "#ffe395",
+            "tertiary-container": "#fcd34d",
+            "on-tertiary": "#665100",
+            "surface": "#060e20",
+            "surface-container": "#05183c",
+            "surface-container-low": "#06122d",
+            "surface-container-high": "#031d4b",
+            "surface-container-highest": "#00225a",
+            "surface-variant": "#00225a",
+            "on-surface": "#dee5ff",
+            "on-surface-variant": "#91aaeb",
+            "outline": "#5b74b1",
+            "outline-variant": "#2b4680",
+            "error": "#ec7c8a",
+            "error-container": "#7f2737",
+            "background": "#060e20"
+          },
+          fontFamily: {
+            "headline": ["Manrope", "sans-serif"],
+            "body": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  
+  <style>
+    .subject-card {
+      transition: all 0.3s ease;
+    }
+    .subject-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    .timeline-item {
+      transition: all 0.3s ease;
+    }
+    .timeline-item:hover {
+      background: rgba(0, 34, 90, 0.4);
+    }
+    .countdown-digit {
+      text-shadow: 0 0 30px rgba(255, 227, 149, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body">
+  
+  <!-- Side Navigation -->
+  <aside class="side-nav hidden md:flex">
+    <div class="side-nav-brand">
+      <h1>Focus Mode</h1>
+      <p>Stay Ethereal</p>
+    </div>
+    
+    <nav class="side-nav-links">
+      <a href="index.html" class="side-nav-link" data-page="home">
+        <span class="material-symbols-outlined">timer</span>
+        Home
+      </a>
+      <a href="dashboard.html" class="side-nav-link" data-page="dashboard">
+        <span class="material-symbols-outlined">insert_chart</span>
+        Dashboard
+      </a>
+      <a href="tasks.html" class="side-nav-link" data-page="tasks">
+        <span class="material-symbols-outlined">check_circle</span>
+        Tasks
+      </a>
+      <a href="habits.html" class="side-nav-link" data-page="habits">
+        <span class="material-symbols-outlined">calendar_today</span>
+        Habits
+      </a>
+      <a href="study.html" class="side-nav-link active" data-page="study">
+        <span class="material-symbols-outlined filled">school</span>
+        Study
+      </a>
+    </nav>
+    
+    <div class="side-nav-footer">
+      <button class="side-nav-start-btn" onclick="window.location.href='index.html'">
+        Start Session
+      </button>
+      <a href="#" class="side-nav-link">
+        <span class="material-symbols-outlined">settings</span>
+        Settings
+      </a>
+      <a href="#" class="side-nav-link">
+        <span class="material-symbols-outlined">help_outline</span>
+        Support
+      </a>
+    </div>
+  </aside>
+  
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <button id="menu-toggle" class="md:hidden top-nav-btn">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    
+    <div class="top-nav-actions">
+      <button class="top-nav-btn">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="top-nav-btn">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+      <div class="top-nav-avatar">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="User">
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content pb-24">
+    
+    <!-- Exam Countdown -->
+    <section class="mb-12 animate-fade-in">
+      <div class="relative overflow-hidden rounded-2xl p-8 md:p-12 flex flex-col items-center justify-center text-center bg-surface-container border border-outline-variant/10">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0 opacity-20" style="background: linear-gradient(135deg, rgba(139, 214, 180, 0.1), rgba(138, 149, 255, 0.1));"></div>
+        
+        <div class="relative z-10">
+          <span class="text-secondary font-headline font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Major Milestone</span>
+          <h1 class="text-4xl md:text-6xl font-headline font-extrabold text-on-surface mb-8 tracking-tighter">Final Math Exam</h1>
+          
+          <div class="flex gap-4 md:gap-10 items-center justify-center">
+            <div class="flex flex-col">
+              <span class="countdown-digit text-4xl md:text-7xl font-headline font-light text-tertiary" id="countdown-days">14</span>
+              <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Days</span>
+            </div>
+            <span class="text-4xl md:text-7xl font-light text-outline-variant">:</span>
+            <div class="flex flex-col">
+              <span class="countdown-digit text-4xl md:text-7xl font-headline font-light text-tertiary" id="countdown-hours">03</span>
+              <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Hours</span>
+            </div>
+            <span class="text-4xl md:text-7xl font-light text-outline-variant">:</span>
+            <div class="flex flex-col">
+              <span class="countdown-digit text-4xl md:text-7xl font-headline font-light text-tertiary" id="countdown-minutes">45</span>
+              <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Minutes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Subject Organization -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="flex items-center justify-between px-2">
+          <h2 class="text-2xl font-headline font-bold text-on-surface tracking-tight">Subject Organization</h2>
+          <button class="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-1 hover:underline">
+            <span class="material-symbols-outlined text-sm">add</span> Add Subject
+          </button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Biology Card -->
+          <div class="subject-card p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer">
+            <div class="flex justify-between items-start mb-6">
+              <div class="p-3 rounded-full bg-primary/10 text-primary">
+                <span class="material-symbols-outlined">biotech</span>
+              </div>
+              <span class="text-xs font-bold text-primary px-3 py-1 bg-primary/5 rounded-full">High Priority</span>
+            </div>
+            <h3 class="text-lg font-headline font-bold mb-1">Biology</h3>
+            <p class="text-xs text-on-surface-variant mb-6">Cell Biology & Genetics</p>
+            <div class="space-y-2">
+              <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                <span>Syllabus Completion</span>
+                <span>75%</span>
+              </div>
+              <div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- History Card -->
+          <div class="subject-card p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer">
+            <div class="flex justify-between items-start mb-6">
+              <div class="p-3 rounded-full bg-secondary/10 text-secondary">
+                <span class="material-symbols-outlined">history_edu</span>
+              </div>
+              <span class="text-xs font-bold text-secondary px-3 py-1 bg-secondary/5 rounded-full">Medium</span>
+            </div>
+            <h3 class="text-lg font-headline font-bold mb-1">History</h3>
+            <p class="text-xs text-on-surface-variant mb-6">20th Century Conflicts</p>
+            <div class="space-y-2">
+              <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                <span>Syllabus Completion</span>
+                <span>42%</span>
+              </div>
+              <div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-secondary rounded-full transition-all duration-500" style="width: 42%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Physics Card -->
+          <div class="subject-card p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10 cursor-pointer">
+            <div class="flex justify-between items-start mb-6">
+              <div class="p-3 rounded-full bg-tertiary/10 text-tertiary">
+                <span class="material-symbols-outlined">architecture</span>
+              </div>
+              <span class="text-xs font-bold text-tertiary px-3 py-1 bg-tertiary/5 rounded-full">Review Needed</span>
+            </div>
+            <h3 class="text-lg font-headline font-bold mb-1">Physics</h3>
+            <p class="text-xs text-on-surface-variant mb-6">Quantum Mechanics</p>
+            <div class="space-y-2">
+              <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                <span>Syllabus Completion</span>
+                <span>18%</span>
+              </div>
+              <div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-full bg-tertiary rounded-full transition-all duration-500" style="width: 18%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Focus Recommendation Card -->
+          <div class="subject-card p-6 rounded-2xl bg-primary/5 border border-primary/10 flex flex-col justify-center items-center text-center">
+            <span class="material-symbols-outlined text-primary text-4xl mb-3">auto_awesome</span>
+            <h4 class="text-md font-bold mb-2">Focus Recommendation</h4>
+            <p class="text-xs text-on-surface-variant">Try the Pomodoro technique for Physics today to break the friction.</p>
+            <button class="mt-4 text-xs font-bold text-primary underline underline-offset-4 hover:no-underline">Explore Techniques</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Session Planner -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="flex items-center justify-between px-2">
+          <h2 class="text-2xl font-headline font-bold text-on-surface tracking-tight">Session Planner</h2>
+          <span class="text-on-surface-variant text-sm font-medium">May 14, 2024</span>
+        </div>
+        
+        <div class="rounded-2xl bg-surface-container overflow-hidden border border-outline-variant/10">
+          <!-- Timeline Header -->
+          <div class="flex bg-surface-container-high/50 p-4 border-b border-outline-variant/5">
+            <div class="w-16 text-[10px] font-bold uppercase tracking-widest text-outline-variant">Time</div>
+            <div class="flex-1 text-[10px] font-bold uppercase tracking-widest text-outline-variant ml-4">Activity</div>
+          </div>
+          
+          <!-- Timeline Content -->
+          <div class="p-2 space-y-1">
+            <!-- Entry 1 -->
+            <div class="timeline-item flex items-stretch">
+              <div class="w-16 py-4 flex flex-col items-center justify-start border-r border-outline-variant/5">
+                <span class="text-xs font-medium text-on-surface-variant">08:00</span>
+              </div>
+              <div class="flex-1 ml-4 py-2 px-4 my-1 rounded-xl bg-primary-container/20 border-l-4 border-primary">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-primary">Math Practice</span>
+                  <span class="text-[10px] text-on-surface-variant">90m</span>
+                </div>
+                <p class="text-[10px] text-on-surface-variant mt-1">Calculus: Integration by parts</p>
+              </div>
+            </div>
+            
+            <!-- Entry 2 -->
+            <div class="timeline-item flex items-stretch">
+              <div class="w-16 py-4 flex flex-col items-center justify-start border-r border-outline-variant/5">
+                <span class="text-xs font-medium text-on-surface-variant">10:30</span>
+              </div>
+              <div class="flex-1 ml-4 py-2 px-4 my-1 rounded-xl bg-secondary-container/20 border-l-4 border-secondary">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-secondary">Biology Review</span>
+                  <span class="text-[10px] text-on-surface-variant">60m</span>
+                </div>
+                <p class="text-[10px] text-on-surface-variant mt-1">Chapter 4: Mitochondrial DNA</p>
+              </div>
+            </div>
+            
+            <!-- Entry 3 (Break) -->
+            <div class="flex items-stretch italic">
+              <div class="w-16 py-4 flex flex-col items-center justify-start border-r border-outline-variant/5">
+                <span class="text-xs font-medium text-on-surface-variant/40">11:30</span>
+              </div>
+              <div class="flex-1 ml-4 py-2 px-4 my-1 border border-dashed border-outline-variant/20 rounded-xl flex items-center justify-center">
+                <span class="text-[10px] text-on-surface-variant/60 uppercase tracking-widest">Mindful Break</span>
+              </div>
+            </div>
+            
+            <!-- Entry 4 -->
+            <div class="timeline-item flex items-stretch">
+              <div class="w-16 py-4 flex flex-col items-center justify-start border-r border-outline-variant/5">
+                <span class="text-xs font-medium text-on-surface-variant">13:00</span>
+              </div>
+              <div class="flex-1 ml-4 py-2 px-4 my-1 rounded-xl bg-surface-container-high border-l-4 border-outline">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs font-bold text-on-surface">History Essay</span>
+                  <span class="text-[10px] text-on-surface-variant">120m</span>
+                </div>
+                <p class="text-[10px] text-on-surface-variant mt-1">Drafting: Cold War Diplomacy</p>
+              </div>
+            </div>
+            
+            <!-- Empty Slot -->
+            <div class="flex items-stretch opacity-30 hover:opacity-100 transition-opacity cursor-pointer">
+              <div class="w-16 py-4 flex flex-col items-center justify-start border-r border-outline-variant/5">
+                <span class="text-xs font-medium text-on-surface-variant">15:00</span>
+              </div>
+              <div class="flex-1 ml-4 py-2 px-4 my-1 border border-dashed border-outline-variant/30 rounded-xl flex items-center justify-center">
+                <span class="text-[10px] text-on-surface-variant uppercase tracking-widest">+ Schedule Session</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Focus Goal Footer -->
+          <div class="p-6 bg-surface-container-highest/30 border-t border-outline-variant/5">
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <div class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Today's Focus Goal</div>
+                <div class="text-sm font-medium">Complete 4 Deep Work blocks</div>
+              </div>
+              <div class="relative w-12 h-12 flex items-center justify-center">
+                <svg class="w-12 h-12 absolute progress-ring">
+                  <circle class="progress-ring-bg" cx="24" cy="24" r="20" stroke-width="4"></circle>
+                  <circle class="text-primary" cx="24" cy="24" r="20" fill="none" stroke="currentColor" 
+                          stroke-width="4" stroke-dasharray="125.6" stroke-dashoffset="31.4" stroke-linecap="round"></circle>
+                </svg>
+                <span class="text-[10px] font-bold text-primary z-10">3/4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+  
+  <!-- Floating Action Button -->
+  <div class="fixed bottom-8 right-8 z-50">
+    <button class="flex items-center gap-3 px-6 py-4 rounded-full bg-gradient-to-br from-tertiary to-tertiary-dim text-on-tertiary font-bold shadow-2xl shadow-black/50 hover:scale-105 active:scale-95 transition-all" onclick="window.location.href='index.html'">
+      <span class="material-symbols-outlined">play_arrow</span>
+      <span class="text-sm font-headline tracking-tighter">Enter Study Sanctuary</span>
+    </button>
+  </div>
+  
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav">
+    <a href="index.html" class="mobile-nav-btn" data-page="home">
+      <span class="material-symbols-outlined">timer</span>
+      <span>Home</span>
+    </a>
+    <a href="dashboard.html" class="mobile-nav-btn" data-page="dashboard">
+      <span class="material-symbols-outlined">insert_chart</span>
+      <span>Stats</span>
+    </a>
+    <a href="tasks.html" class="mobile-nav-btn" data-page="tasks">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span>Tasks</span>
+    </a>
+    <a href="study.html" class="mobile-nav-btn active" data-page="study">
+      <span class="material-symbols-outlined filled">school</span>
+      <span>Study</span>
+    </a>
+    <a href="habits.html" class="mobile-nav-btn" data-page="habits">
+      <span class="material-symbols-outlined">settings</span>
+      <span>More</span>
+    </a>
+  </nav>
+  
+  <!-- Background Glow Effects -->
+  <div class="bg-glow bg-glow-primary w-[30vw] h-[30vw] top-[5%] right-[5%]"></div>
+  <div class="bg-glow bg-glow-secondary w-[25vw] h-[25vw] bottom-[10%] left-[5%]"></div>
+  
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script>
+    // Countdown Timer for Study Mode
+    function updateCountdown() {
+      const examDate = new Date();
+      examDate.setDate(examDate.getDate() + 14);
+      examDate.setHours(examDate.getHours() + 3);
+      examDate.setMinutes(examDate.getMinutes() + 45);
+      
+      const now = new Date();
+      const diff = examDate - now;
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      document.getElementById('countdown-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('countdown-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('countdown-minutes').textContent = String(minutes).padStart(2, '0');
+    }
+    
+    updateCountdown();
+    setInterval(updateCountdown, 60000); // Update every minute
+  </script>
+</body>
+</html>

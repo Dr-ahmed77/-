@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethereal Sanctuary - Habits</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#8bd6b4",
+            "primary-container": "#00513a",
+            "on-primary": "#004a34",
+            "secondary": "#8a95ff",
+            "secondary-container": "#222d97",
+            "on-secondary": "#000974",
+            "tertiary": "#ffe395",
+            "tertiary-container": "#fcd34d",
+            "on-tertiary": "#665100",
+            "surface": "#060e20",
+            "surface-container": "#05183c",
+            "surface-container-low": "#06122d",
+            "surface-container-high": "#031d4b",
+            "surface-container-highest": "#00225a",
+            "surface-variant": "#00225a",
+            "on-surface": "#dee5ff",
+            "on-surface-variant": "#91aaeb",
+            "outline": "#5b74b1",
+            "outline-variant": "#2b4680",
+            "error": "#ec7c8a",
+            "error-container": "#7f2737",
+            "background": "#060e20"
+          },
+          fontFamily: {
+            "headline": ["Manrope", "sans-serif"],
+            "body": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  
+  <style>
+    .habit-card {
+      transition: all 0.3s ease;
+    }
+    .habit-card:hover {
+      transform: translateY(-2px);
+    }
+    .milestone-card {
+      transition: all 0.3s ease;
+    }
+    .milestone-card:hover {
+      background: rgba(0, 34, 90, 0.8);
+    }
+    .leaderboard-item {
+      transition: all 0.3s ease;
+    }
+    .leaderboard-item:hover {
+      background: rgba(139, 214, 180, 0.05);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body">
+  
+  <!-- Side Navigation -->
+  <aside class="side-nav hidden md:flex">
+    <div class="side-nav-brand">
+      <h1>Focus Mode</h1>
+      <p>Stay Ethereal</p>
+    </div>
+    
+    <nav class="side-nav-links">
+      <a href="index.html" class="side-nav-link" data-page="home">
+        <span class="material-symbols-outlined">timer</span>
+        Home
+      </a>
+      <a href="dashboard.html" class="side-nav-link" data-page="dashboard">
+        <span class="material-symbols-outlined">insert_chart</span>
+        Dashboard
+      </a>
+      <a href="tasks.html" class="side-nav-link" data-page="tasks">
+        <span class="material-symbols-outlined">check_circle</span>
+        Tasks
+      </a>
+      <a href="habits.html" class="side-nav-link active" data-page="habits">
+        <span class="material-symbols-outlined filled">calendar_today</span>
+        Habits
+      </a>
+      <a href="study.html" class="side-nav-link" data-page="study">
+        <span class="material-symbols-outlined">school</span>
+        Study
+      </a>
+    </nav>
+    
+    <div class="side-nav-footer">
+      <button class="side-nav-start-btn" onclick="window.location.href='index.html'">
+        Start Session
+      </button>
+      <a href="#" class="side-nav-link">
+        <span class="material-symbols-outlined">settings</span>
+        Settings
+      </a>
+      <a href="#" class="side-nav-link">
+        <span class="material-symbols-outlined">help_outline</span>
+        Support
+      </a>
+    </div>
+  </aside>
+  
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <button id="menu-toggle" class="md:hidden top-nav-btn">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    
+    <div class="top-nav-actions">
+      <button class="top-nav-btn">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="top-nav-btn">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+      <div class="top-nav-avatar">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="User">
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content lg:pr-96">
+    
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1>Daily Rituals</h1>
+      <p class="max-w-xl">Cultivate your presence through consistent action. Your ethereal garden grows with every completed task.</p>
+    </header>
+    
+    <!-- Habits List -->
+    <div id="habits-list" class="space-y-4">
+      <!-- Habits will be rendered by JS -->
+    </div>
+    
+    <!-- Add Habit Button -->
+    <button id="add-habit-btn" class="w-full mt-6 flex items-center justify-center gap-2 py-6 rounded-2xl border-2 border-dashed border-outline-variant/30 hover:border-primary/50 hover:bg-primary/5 transition-all text-on-surface-variant hover:text-primary group">
+      <span class="material-symbols-outlined">add</span>
+      <span class="font-bold font-headline">Establish New Ritual</span>
+    </button>
+    
+  </main>
+  
+  <!-- Right Sidebar -->
+  <aside class="hidden xl:block fixed right-0 top-0 h-full w-96 z-40 bg-surface-container-low/50 backdrop-blur-3xl pt-24 px-8 border-l border-outline-variant/10 overflow-y-auto">
+    
+    <!-- Karma Points -->
+    <div class="mb-10 text-center">
+      <div class="relative inline-block mb-4">
+        <svg class="w-32 h-32 progress-ring">
+          <circle class="progress-ring-bg" cx="64" cy="64" r="58"></circle>
+          <circle class="text-tertiary" cx="64" cy="64" r="58" fill="none" stroke="currentColor" 
+                  stroke-width="8" stroke-dasharray="364.4" stroke-dashoffset="109.3" stroke-linecap="round"></circle>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="text-2xl font-black text-on-surface">2,450</span>
+          <span class="text-[10px] uppercase tracking-tighter text-on-surface-variant">Karma Points</span>
+        </div>
+      </div>
+      <p class="text-sm font-medium text-on-surface-variant">750 points until next Milestone</p>
+    </div>
+    
+    <!-- Milestones -->
+    <div class="space-y-6 mb-10">
+      <div class="flex items-center justify-between">
+        <h4 class="text-sm font-bold font-headline uppercase tracking-widest text-on-surface">Active Milestones</h4>
+        <button class="text-[10px] text-secondary font-bold hover:underline">VIEW ALL</button>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="milestone-card glass-card p-4 rounded-xl flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-tertiary">
+            <span class="material-symbols-outlined">military_tech</span>
+          </div>
+          <div class="flex-grow">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-on-surface">Ocean Breath</span>
+              <span class="text-[10px] text-on-surface-variant">3/5 days</span>
+            </div>
+            <div class="h-1 bg-surface-container-high rounded-full overflow-hidden">
+              <div class="h-full bg-tertiary" style="width: 60%"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="milestone-card glass-card p-4 rounded-xl flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+            <span class="material-symbols-outlined">star</span>
+          </div>
+          <div class="flex-grow">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-bold text-on-surface">Crystal Clarity</span>
+              <span class="text-[10px] text-on-surface-variant">90% streak</span>
+            </div>
+            <div class="h-1 bg-surface-container-high rounded-full overflow-hidden">
+              <div class="h-full bg-secondary" style="width: 90%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Leaderboard -->
+    <div>
+      <h4 class="text-sm font-bold font-headline uppercase tracking-widest text-on-surface mb-6">Sanctuary Top Focus</h4>
+      
+      <div class="space-y-3">
+        <div class="leaderboard-item flex items-center gap-3 p-2 rounded-lg">
+          <span class="text-xs font-black text-on-surface-variant w-4">1</span>
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop&crop=face" 
+               alt="Leader" class="w-8 h-8 rounded-full">
+          <span class="text-xs font-medium flex-grow">Aria Serene</span>
+          <span class="text-xs font-bold text-primary">12,400</span>
+        </div>
+        
+        <div class="leaderboard-item flex items-center gap-3 p-2 rounded-lg">
+          <span class="text-xs font-black text-on-surface-variant w-4">2</span>
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop&crop=face" 
+               alt="Leader" class="w-8 h-8 rounded-full">
+          <span class="text-xs font-medium flex-grow">Julian Focus</span>
+          <span class="text-xs font-bold text-primary">11,920</span>
+        </div>
+        
+        <div class="leaderboard-item flex items-center gap-3 p-2 rounded-lg bg-primary/10">
+          <span class="text-xs font-black text-primary w-4">12</span>
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=50&h=50&fit=crop&crop=face" 
+               alt="You" class="w-8 h-8 rounded-full">
+          <span class="text-xs font-bold flex-grow text-primary">You</span>
+          <span class="text-xs font-bold text-primary">2,450</span>
+        </div>
+      </div>
+    </div>
+    
+  </aside>
+  
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav">
+    <a href="index.html" class="mobile-nav-btn" data-page="home">
+      <span class="material-symbols-outlined">timer</span>
+      <span>Home</span>
+    </a>
+    <a href="dashboard.html" class="mobile-nav-btn" data-page="dashboard">
+      <span class="material-symbols-outlined">insert_chart</span>
+      <span>Stats</span>
+    </a>
+    <a href="tasks.html" class="mobile-nav-btn" data-page="tasks">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span>Tasks</span>
+    </a>
+    <a href="study.html" class="mobile-nav-btn" data-page="study">
+      <span class="material-symbols-outlined">school</span>
+      <span>Study</span>
+    </a>
+    <a href="habits.html" class="mobile-nav-btn active" data-page="habits">
+      <span class="material-symbols-outlined filled">calendar_today</span>
+      <span>Habits</span>
+    </a>
+  </nav>
+  
+  <!-- Background Glow Effects -->
+  <div class="bg-glow bg-glow-primary w-[25vw] h-[25vw] top-[10%] right-[30%]"></div>
+  <div class="bg-glow bg-glow-secondary w-[20vw] h-[20vw] bottom-[10%] left-[20%]"></div>
+  
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>

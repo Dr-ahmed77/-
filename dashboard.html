@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethereal Sanctuary - Dashboard</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#8bd6b4",
+            "primary-container": "#00513a",
+            "on-primary": "#004a34",
+            "secondary": "#8a95ff",
+            "secondary-container": "#222d97",
+            "on-secondary": "#000974",
+            "tertiary": "#ffe395",
+            "tertiary-container": "#fcd34d",
+            "on-tertiary": "#665100",
+            "surface": "#060e20",
+            "surface-container": "#05183c",
+            "surface-container-low": "#06122d",
+            "surface-container-high": "#031d4b",
+            "surface-container-highest": "#00225a",
+            "surface-variant": "#00225a",
+            "on-surface": "#dee5ff",
+            "on-surface-variant": "#91aaeb",
+            "outline": "#5b74b1",
+            "outline-variant": "#2b4680",
+            "error": "#ec7c8a",
+            "error-container": "#7f2737",
+            "background": "#060e20"
+          },
+          fontFamily: {
+            "headline": ["Manrope", "sans-serif"],
+            "body": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Shared Styles -->
+  <link rel="stylesheet" href="css/shared.css">
+  
+  <style>
+    .chart-bar {
+      transform-origin: bottom;
+      transform: scaleY(0);
+      transition: transform 0.5s ease;
+    }
+    .chart-bar:hover {
+      filter: brightness(1.2);
+    }
+    .achievement-icon {
+      transition: all 0.3s ease;
+    }
+    .achievement-icon:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body">
+  
+  <!-- Side Navigation -->
+  <aside class="side-nav hidden md:flex">
+    <div class="side-nav-brand">
+      <h1>Focus Mode</h1>
+      <p>Stay Ethereal</p>
+    </div>
+    
+    <nav class="side-nav-links">
+      <a href="index.html" class="side-nav-link" data-page="home">
+        <span class="material-symbols-outlined">timer</span>
+        Home
+      </a>
+      <a href="dashboard.html" class="side-nav-link active" data-page="dashboard">
+        <span class="material-symbols-outlined filled">insert_chart</span>
+        Dashboard
+      </a>
+      <a href="tasks.html" class="side-nav-link" data-page="tasks">
+        <span class="material-symbols-outlined">check_circle</span>
+        Tasks
+      </a>
+      <a href="habits.html" class="side-nav-link" data-page="habits">
+        <span class="material-symbols-outlined">calendar_today</span>
+        Habits
+      </a>
+      <a href="study.html" class="side-nav-link" data-page="study">
+        <span class="material-symbols-outlined">school</span>
+        Study
+      </a>
+    </nav>
+    
+    <div class="side-nav-footer">
+      <button class="side-nav-start-btn" onclick="window.location.href='index.html'">
+        Start Session
+      </button>
+      <a href="#" class="side-nav-link">
+        <span class="material-symbols-outlined">settings</span>
+        Settings
+      </a>
+      <a href="#" class="side-nav-link">
+        <span class="material-symbols-outlined">help_outline</span>
+        Support
+      </a>
+    </div>
+  </aside>
+  
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <button id="menu-toggle" class="md:hidden top-nav-btn">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    
+    <div class="top-nav-actions">
+      <button class="top-nav-btn">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <button class="top-nav-btn">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+      <div class="top-nav-avatar">
+        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="User">
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Page Header -->
+    <header class="page-header flex justify-between items-start">
+      <div>
+        <h1>Productivity Dashboard</h1>
+        <p>Your focus ritual, quantified.</p>
+      </div>
+    </header>
+    
+    <!-- Bento Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-7xl mx-auto">
+      
+      <!-- Daily Focus Time Chart (Large - 8 columns) -->
+      <section class="md:col-span-8 glass-card rounded-2xl p-8 relative overflow-hidden animate-fade-in">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <h3 class="text-xl font-headline font-bold text-on-surface">Daily Focus Time</h3>
+            <p class="text-on-surface-variant text-sm">Last 7 days performance</p>
+          </div>
+          <div class="text-right">
+            <span class="text-4xl font-headline font-black text-primary" data-animate data-target="38.4">0</span>
+            <span class="text-on-surface-variant text-xs uppercase block tracking-widest">Total Hours</span>
+          </div>
+        </div>
+        
+        <!-- Chart -->
+        <div class="flex items-end justify-between h-48 gap-4 px-2">
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-surface-container-high rounded-t-xl" style="height: 40%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">MON</span>
+          </div>
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-surface-container-high rounded-t-xl" style="height: 65%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">TUE</span>
+          </div>
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-surface-container-high rounded-t-xl" style="height: 50%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">WED</span>
+          </div>
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-primary rounded-t-xl glow-primary" style="height: 90%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">THU</span>
+          </div>
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-surface-container-high rounded-t-xl" style="height: 75%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">FRI</span>
+          </div>
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-surface-container-high rounded-t-xl" style="height: 30%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">SAT</span>
+          </div>
+          <div class="flex flex-col items-center gap-3 flex-1">
+            <div class="chart-bar w-full bg-surface-container-high rounded-t-xl" style="height: 45%;"></div>
+            <span class="text-[10px] font-bold text-on-surface-variant">SUN</span>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Stats Stack (4 columns) -->
+      <div class="md:col-span-4 flex flex-col gap-6">
+        
+        <!-- Focus Streak -->
+        <section class="glass-card rounded-2xl p-6 flex items-center justify-between animate-fade-in stagger-1">
+          <div>
+            <h3 class="text-on-surface-variant text-sm font-medium uppercase tracking-widest mb-1">Focus Streak</h3>
+            <div class="text-4xl font-headline font-black text-tertiary">7 Days</div>
+          </div>
+          <div class="w-16 h-16 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+            <span class="material-symbols-outlined text-4xl filled">local_fire_department</span>
+          </div>
+        </section>
+        
+        <!-- Productivity Level -->
+        <section class="glass-card rounded-2xl p-6 animate-fade-in stagger-2">
+          <h3 class="text-on-surface-variant text-sm font-medium uppercase tracking-widest mb-4 text-center">Productivity Level</h3>
+          <div class="flex flex-col items-center">
+            <div class="relative w-32 h-32 flex items-center justify-center mb-4">
+              <svg class="absolute inset-0 w-full h-full progress-ring">
+                <circle class="progress-ring-bg" cx="64" cy="64" r="58"></circle>
+                <circle class="progress-ring-fill" cx="64" cy="64" r="58" 
+                        stroke-dasharray="364" stroke-dashoffset="110"></circle>
+              </svg>
+              <div class="text-2xl font-headline font-black text-on-surface">14</div>
+            </div>
+            <p class="text-on-surface font-headline font-bold text-lg">Zen Master</p>
+            <p class="text-on-surface-variant text-xs mt-1">450 XP to Level 15</p>
+          </div>
+        </section>
+        
+      </div>
+      
+      <!-- Session History (6 columns) -->
+      <section class="md:col-span-6 glass-card rounded-2xl p-6 animate-fade-in stagger-3">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-headline font-bold text-on-surface">Session History</h3>
+          <button class="text-secondary text-xs font-bold hover:underline transition-all">VIEW ALL</button>
+        </div>
+        
+        <div class="space-y-3" id="session-history">
+          <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl transition-colors hover:bg-surface-container cursor-pointer">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">task_alt</span>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">Deep Work: UI Phase</div>
+                <div class="text-xs text-on-surface-variant">Today, 2:45 PM</div>
+              </div>
+            </div>
+            <div class="text-on-surface-variant font-medium">90m</div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl transition-colors hover:bg-surface-container cursor-pointer">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined">edit_note</span>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">Project Documentation</div>
+                <div class="text-xs text-on-surface-variant">Yesterday, 11:00 AM</div>
+              </div>
+            </div>
+            <div class="text-on-surface-variant font-medium">45m</div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl transition-colors hover:bg-surface-container cursor-pointer">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+                <span class="material-symbols-outlined">lightbulb</span>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">Creative Ideation</div>
+                <div class="text-xs text-on-surface-variant">Yesterday, 9:15 AM</div>
+              </div>
+            </div>
+            <div class="text-on-surface-variant font-medium">120m</div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl transition-colors hover:bg-surface-container cursor-pointer">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined">code</span>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">Backend Architecture</div>
+                <div class="text-xs text-on-surface-variant">Oct 24, 4:30 PM</div>
+              </div>
+            </div>
+            <div class="text-on-surface-variant font-medium">60m</div>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl transition-colors hover:bg-surface-container cursor-pointer">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                <span class="material-symbols-outlined">mail</span>
+              </div>
+              <div>
+                <div class="font-bold text-on-surface">Inbox Zero Sprint</div>
+                <div class="text-xs text-on-surface-variant">Oct 24, 9:00 AM</div>
+              </div>
+            </div>
+            <div class="text-on-surface-variant font-medium">30m</div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Achievements (6 columns) -->
+      <section class="md:col-span-6 glass-card rounded-2xl p-6 animate-fade-in stagger-4">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-headline font-bold text-on-surface">Achievements</h3>
+          <p class="text-on-surface-variant text-sm">4 / 12 Unlocked</p>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-4">
+          <!-- Unlocked -->
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div class="achievement-icon w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary glow-primary">
+              <span class="material-symbols-outlined text-2xl filled">bolt</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface text-center leading-tight uppercase tracking-wider">Early Bird</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div class="achievement-icon w-16 h-16 rounded-full bg-gradient-to-br from-secondary to-secondary-container flex items-center justify-center text-on-secondary glow-secondary">
+              <span class="material-symbols-outlined text-2xl filled">auto_awesome</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface text-center leading-tight uppercase tracking-wider">Deep Diver</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div class="achievement-icon w-16 h-16 rounded-full bg-gradient-to-br from-tertiary to-tertiary-container flex items-center justify-center text-on-tertiary glow-tertiary">
+              <span class="material-symbols-outlined text-2xl filled">military_tech</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface text-center leading-tight uppercase tracking-wider">Ritualist</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div class="achievement-icon w-16 h-16 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-2xl filled">self_improvement</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface text-center leading-tight uppercase tracking-wider">Zen Focus</span>
+          </div>
+          
+          <!-- Locked -->
+          <div class="flex flex-col items-center gap-2 opacity-30">
+            <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined text-2xl">lock</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface-variant text-center leading-tight uppercase tracking-wider">Locked</span>
+          </div>
+          
+          <div class="flex flex-col items-center gap-2 opacity-30">
+            <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined text-2xl">lock</span>
+            </div>
+            <span class="text-[10px] font-bold text-on-surface-variant text-center leading-tight uppercase tracking-wider">Locked</span>
+          </div>
+        </div>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav">
+    <a href="index.html" class="mobile-nav-btn" data-page="home">
+      <span class="material-symbols-outlined">timer</span>
+      <span>Home</span>
+    </a>
+    <a href="dashboard.html" class="mobile-nav-btn active" data-page="dashboard">
+      <span class="material-symbols-outlined filled">insert_chart</span>
+      <span>Stats</span>
+    </a>
+    <a href="tasks.html" class="mobile-nav-btn" data-page="tasks">
+      <span class="material-symbols-outlined">check_circle</span>
+      <span>Tasks</span>
+    </a>
+    <a href="study.html" class="mobile-nav-btn" data-page="study">
+      <span class="material-symbols-outlined">school</span>
+      <span>Study</span>
+    </a>
+    <a href="habits.html" class="mobile-nav-btn" data-page="habits">
+      <span class="material-symbols-outlined">settings</span>
+      <span>More</span>
+    </a>
+  </nav>
+  
+  <!-- Background Glow Effects -->
+  <div class="bg-glow bg-glow-primary w-[30vw] h-[30vw] top-[10%] right-[5%]"></div>
+  <div class="bg-glow bg-glow-secondary w-[25vw] h-[25vw] bottom-[10%] left-[5%]"></div>
+  
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>
